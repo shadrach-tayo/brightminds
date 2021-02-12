@@ -4,7 +4,7 @@
 /node_modules
 
 # env files
-.env
+# .env
 .aws-secret
 new_user_credentials
 # Logs
