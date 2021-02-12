@@ -5,7 +5,8 @@
 
 # env files
 .env
-
+.aws-secret
+new_user_credentials
 # Logs
 logs
 *.log
