@@ -9,8 +9,9 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import DB from './database';
 import Routes from './interfaces/routes.interface';
-import errorMiddleware from './middlewares/error.middleware';
+import errorMiddleware from './common/middlewares/error.middleware';
 import { logger, stream } from './utils/logger';
+import loaders from './loaders';
 
 class App {
   public app: express.Application;
@@ -22,8 +23,9 @@ class App {
     this.port = process.env.PORT || 3000;
     this.env = process.env.NODE_ENV || 'development';
 
-    this.connectToDatabase();
-    this.initializeMiddlewares();
+    // this.connectToDatabase();
+    // this.initializeMiddlewares();
+    loaders(this.app);
     this.initializeRoutes(routes);
     this.initializeSwagger();
     this.initializeErrorHandling();
@@ -70,7 +72,7 @@ class App {
     const options = {
       swaggerDefinition: {
         info: {
-          title: 'REST API',
+          title: 'Bright minds API',
           version: '1.0.0',
           description: 'Example docs',
         },

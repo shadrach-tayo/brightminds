@@ -1,28 +1,26 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
-import { User } from '../interfaces/domain.interface';
+import { UserType } from '../interfaces/domain.enum';
+import { Admin } from '../interfaces/domain.interface';
 import { hashPassword } from '../utils/util';
 
-export type UserCreationAttributes = Optional<User, 'dob' | 'avatar_url'>;
+export type AdminCreationAttributes = Optional<Admin, 'avatar_url'>;
 
-export class UserModel extends Model<User, UserCreationAttributes> implements User {
+export class AdminModel extends Model<Admin, AdminCreationAttributes> implements Admin {
   public id: string;
   public email: string;
   public password: string;
   public firstname: string;
   public lastname: string;
-  public role: string;
+  public role: UserType;
   public avatar_url: string;
-  public dob: string;
-  public addressId: string;
   public phoneNumber: string;
-  public school: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-export default function userFactory(sequelize: Sequelize, { AddressModel }): typeof UserModel {
-  UserModel.init(
+export default function adminFactory(sequelize: Sequelize): typeof AdminModel {
+  AdminModel.init(
     {
       id: {
         primaryKey: true,
@@ -46,11 +44,6 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
         type: DataTypes.STRING(45),
       },
 
-      school: {
-        allowNull: false,
-        type: DataTypes.STRING(45),
-      },
-
       lastname: {
         allowNull: false,
         type: DataTypes.STRING(45),
@@ -61,9 +54,7 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
         type: DataTypes.STRING(45),
       },
 
-      avatar_url: DataTypes.STRING(45),
-
-      dob: DataTypes.DATE,
+      avatar_url: DataTypes.STRING(255),
 
       phoneNumber: {
         allowNull: false,
@@ -72,18 +63,19 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
     },
     {
       hooks: {
-        beforeCreate: (user, _) => {
-          return hashPassword(user.password).then((hashedPassword: string) => {
-            user.password = hashedPassword;
+        beforeCreate: (admin, _) => {
+          return hashPassword(admin.password).then((hashedPassword: string) => {
+            admin.password = hashedPassword;
           });
         },
       },
-      tableName: 'users',
+      tableName: 'admins',
       sequelize,
     },
   );
 
-  UserModel.belongsTo(AddressModel);
+  // AdminModel.
+  // };
 
-  return UserModel;
+  return AdminModel;
 }

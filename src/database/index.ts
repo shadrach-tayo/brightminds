@@ -1,7 +1,12 @@
 import Sequelize from 'sequelize';
 import config from '../config';
 import { logger } from '../utils/logger';
-import UserModel from '../models/users.model';
+import userFactory from '../models/users.model';
+import adminFactory from '../models/admin.model';
+import eventFactory from '../models/events.model';
+import addressFactory from '../models/address.model';
+import transactionFactory from '../models/transaction.model';
+import competitionFactory from '../models/competition.model';
 
 const env = process.env.NODE_ENV || 'development';
 const sequelize = new Sequelize.Sequelize(config[env].database, config[env].username, config[env].password, {
@@ -25,14 +30,26 @@ const sequelize = new Sequelize.Sequelize(config[env].database, config[env].user
 sequelize
   .authenticate()
   .then(() => {
-    logger.info('🟢 The database is connected.');
+    logger.info('🚀 The database is connected.');
   })
   .catch((error: Error) => {
     logger.error(`🔴 Unable to connect to the database: ${error}.`);
   });
 
+const AdminModel = adminFactory(sequelize);
+const AddressModel = addressFactory(sequelize);
+const TransactionModel = transactionFactory(sequelize);
+const CompetitionModel = competitionFactory(sequelize, { TransactionModel, AddressModel });
+const EventModel = eventFactory(sequelize, { AddressModel, TransactionModel });
+const UserModel = userFactory(sequelize, { AddressModel });
+
 const DB = {
-  Users: UserModel(sequelize),
+  Users: UserModel,
+  Admins: AdminModel,
+  Events: EventModel,
+  Address: AddressModel,
+  Competitions: CompetitionModel,
+  Transactions: TransactionModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };

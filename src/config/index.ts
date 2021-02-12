@@ -3,14 +3,14 @@ const dbConfig = {
     username: 'root',
     password: 'password',
     database: 'brightminds',
-    host: 'localhost',
+    host: process.env.MYSQL_HOST,
     dialect: 'mysql',
   },
   test: {
     username: 'root',
     password: 'password',
     database: 'brightminds',
-    host: 'localhost',
+    host: process.env.MYSQL_HOST,
     dialect: 'mysql',
   },
   production: {
