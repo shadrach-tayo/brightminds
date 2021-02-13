@@ -13,6 +13,7 @@ export class UserModel extends Model<User, UserCreationAttributes> implements Us
   public role: string;
   public avatar_url: string;
   public dob: string;
+  public gender: string;
   public addressId: string;
   public phoneNumber: string;
   public school: string;
@@ -33,12 +34,18 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
 
       email: {
         allowNull: false,
+        unique: true,
         type: DataTypes.STRING(45),
       },
 
       password: {
         allowNull: false,
         type: DataTypes.STRING(255),
+      },
+
+      gender: {
+        allowNull: false,
+        type: DataTypes.STRING(6),
       },
 
       firstname: {
@@ -67,6 +74,7 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
 
       phoneNumber: {
         allowNull: false,
+        unique: true,
         type: DataTypes.STRING(14),
       },
     },

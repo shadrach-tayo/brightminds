@@ -20,7 +20,7 @@ class AuthController {
 
   public logIn = async (req: Request, res: Response, next: NextFunction) => {
     const userData: CreateUserDto = req.body;
-
+    console.log('login ', userData);
     try {
       const data = await this.authService.login(userData);
       res.status(200).json({ data, message: 'login' });

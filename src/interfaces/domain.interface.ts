@@ -18,6 +18,7 @@ export interface Admin extends BaseDomain {
 
 export interface User extends Admin {
   dob: string;
+  gender: string;
   addressId?: string;
   school: string;
 }

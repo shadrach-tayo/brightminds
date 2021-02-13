@@ -55,10 +55,10 @@ class AuthService {
   public async login(userData: CreateUserDto): Promise<{ token: string; user: User }> {
     if (isEmpty(userData)) throw new HttpException(400, 'Invalid input');
 
-    const user: User = await this.users.findOne({ where: { email: userData.email } });
-    if (!user) throw new HttpException(409, `The email ${userData.email} was not found`);
+    const user: User = await this.users.findOne({ where: { phoneNumber: userData.phoneNumber } });
+    if (!user) throw new HttpException(409, `The number ${userData.phoneNumber} is not registered`);
 
-    if (!(await isPasswordMatching(userData.password, user.password))) throw new HttpException(409, 'Incorrect email or password');
+    if (!(await isPasswordMatching(userData.password, user.password))) throw new HttpException(409, 'Incorrect phone number or password');
 
     const tokenData = this.createToken(user);
 

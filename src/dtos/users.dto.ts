@@ -1,6 +1,17 @@
 import { IsDateString, IsEmail, IsNotEmptyObject, IsObject, IsPhoneNumber, IsString, MaxLength, MinLength } from 'class-validator';
 import { Admin, User } from '../interfaces/domain.interface';
 import { CreateAddressDto } from './resources.dto';
+
+export class LoginUserDto {
+  @IsPhoneNumber('NG', { message: 'check the length and the country code (+234)' })
+  @MinLength(11)
+  @MaxLength(14)
+  public phoneNumber: string;
+
+  @IsString()
+  @MinLength(6)
+  public password: string;
+}
 export class CreateUserDto implements User {
   @IsEmail()
   public email: string;
@@ -9,25 +20,25 @@ export class CreateUserDto implements User {
   @MinLength(6)
   public password: string;
 
-  @IsString()
+  @IsString({ message: 'Gender is required (male or female)' })
+  public gender: string;
+
+  @IsString({ message: 'School is required' })
   @MinLength(6)
   public school: string;
 
-  // @IsString({ message: 'User type is not valid, try (MEMBER, ADMIN, SUPER_ADMIN)' })
-  // public role: UserType;
-
-  @IsString()
+  @IsString({ message: 'Firstname is required' })
   @MinLength(3)
   public firstname: string;
 
-  @IsString()
+  @IsString({ message: 'Lastname is required' })
   @MinLength(3)
   public lastname: string;
 
-  @IsDateString()
+  @IsDateString({ strict: true })
   public dob: string;
 
-  @IsObject()
+  @IsObject({ message: 'Address is required' })
   @IsNotEmptyObject()
   public address!: CreateAddressDto;
 

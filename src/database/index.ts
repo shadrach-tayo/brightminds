@@ -31,18 +31,24 @@ sequelize
   .authenticate()
   .then(() => {
     logger.info(
-      `🚀 The database is connected.${JSON.stringify(config[env].host)}${JSON.stringify(config[env].database)}${JSON.stringify(
-        config[env].username,
-      )}${JSON.stringify(config[env].password)}`,
+      `🚀 The database is connected. ${process.env.NODE_ENV}
+      ${JSON.stringify(config[env].host)}${JSON.stringify(config[env].database)}${JSON.stringify(config[env].username)}${JSON.stringify(
+        config[env].password,
+      )}
+      `,
     );
-    console.log(
-      `🚀 The database is connected.${JSON.stringify(config[env].host)}${JSON.stringify(config[env].database)}${JSON.stringify(
-        config[env].username,
-      )}${JSON.stringify(config[env].password)}`,
-    );
+    // console.log(
+    //   `🚀 The database is connected.${JSON.stringify(config[env].host)}${JSON.stringify(config[env].database)}${JSON.stringify(
+    //     config[env].username,
+    //   )}${JSON.stringify(config[env].password)}`,
+    // );
   })
   .catch((error: Error) => {
-    logger.error(`🔴 Unable to connect to the database: ${error}.`);
+    console.log(
+      `${JSON.stringify(config[env].host)} ${JSON.stringify(config[env].database)} ${JSON.stringify(config[env].username)} 
+      ${JSON.stringify(config[env].password)}`,
+    );
+    logger.error(`🔴 Unable to connect to the sdatabase: ${error}.`);
   });
 
 const AdminModel = adminFactory(sequelize);
