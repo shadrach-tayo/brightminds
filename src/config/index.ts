@@ -1,7 +1,7 @@
 const dbConfig = {
   development: {
-    username: 'root',
-    password: 'password',
+    username: 'brightminds',
+    password: 'brightminds',
     database: 'brightminds',
     host: process.env.MYSQL_HOST,
     dialect: 'mysql',
