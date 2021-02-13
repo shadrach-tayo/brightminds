@@ -1,0 +1,23 @@
+sudo: required
+
+services:
+    - docker
+
+before_install:
+    - docker build -t shadrach19/brightminds .
+
+script:
+    - docker run -e CI=true shadrach19/brightminds npm run test --coverage
+  
+
+# deploy:
+#     provider: elasticbeanstalk
+#     region: us-east-2
+#     app: bright-minds
+#     env: Brightminds-env
+#     bucket_name: elasticbeanstalk-us-east-2-995117905859
+#     bucket_path: bright-minds
+#     access_key_id: 
+#     secret_access_key:
+#     on:
+#         branch: staging
