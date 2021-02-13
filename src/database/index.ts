@@ -30,7 +30,7 @@ const sequelize = new Sequelize.Sequelize(config[env].database, config[env].user
 sequelize
   .authenticate()
   .then(() => {
-    logger.info('🚀 The database is connected.');
+    logger.info('🚀 The database is connected.', config[env].database, config[env].username, config[env].password, config[env].host);
   })
   .catch((error: Error) => {
     logger.error(`🔴 Unable to connect to the database: ${error}.`);
