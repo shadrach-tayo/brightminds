@@ -63,7 +63,7 @@ export default function adminFactory(sequelize: Sequelize): typeof AdminModel {
     },
     {
       hooks: {
-        beforeCreate: (admin, _) => {
+        beforeCreate: (admin, {}) => {
           return hashPassword(admin.password).then((hashedPassword: string) => {
             admin.password = hashedPassword;
           });

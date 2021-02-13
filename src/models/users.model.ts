@@ -80,7 +80,7 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
     },
     {
       hooks: {
-        beforeCreate: (user, _) => {
+        beforeCreate: (user, {}) => {
           return hashPassword(user.password).then((hashedPassword: string) => {
             user.password = hashedPassword;
           });
