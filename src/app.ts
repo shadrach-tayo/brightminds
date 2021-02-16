@@ -1,7 +1,6 @@
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
-// import DB from './database';
 import Routes from './interfaces/routes.interface';
 import errorMiddleware from './common/middlewares/error.middleware';
 import { logger } from './utils/logger';

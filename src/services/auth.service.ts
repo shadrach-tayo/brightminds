@@ -81,7 +81,6 @@ class AuthService {
   public createToken(user: User | Admin): TokenData {
     const dataStoredInToken: DataStoredInToken = { id: user.id };
     const secret: string = process.env.JWT_SECRET;
-    console.log('secret ', secret);
     const expiresIn: number = 60 * 60 * 24;
 
     return { expiresIn, token: jwt.sign(dataStoredInToken, secret, { expiresIn }) };
