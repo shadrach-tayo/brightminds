@@ -8,6 +8,10 @@
 .aws-secret
 .env.production
 new_user_credentials.csv
+
+# temp
+/temp
+
 # Logs
 logs
 *.log

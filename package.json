@@ -13,6 +13,7 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "aws-sdk": "^2.843.0",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.2",
     "class-validator": "^0.13.1",

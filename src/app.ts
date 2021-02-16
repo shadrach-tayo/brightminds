@@ -1,16 +1,9 @@
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import express from 'express';
-import helmet from 'helmet';
-import hpp from 'hpp';
-import morgan from 'morgan';
-import compression from 'compression';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
-import DB from './database';
 import Routes from './interfaces/routes.interface';
 import errorMiddleware from './common/middlewares/error.middleware';
-import { logger, stream } from './utils/logger';
+import { logger } from './utils/logger';
 import loaders from './loaders';
 
 class App {
@@ -22,9 +15,6 @@ class App {
     this.app = express();
     this.port = process.env.PORT || 3000;
     this.env = process.env.NODE_ENV || 'development';
-
-    // this.connectToDatabase();
-    // this.initializeMiddlewares();
     loaders(this.app);
     this.initializeRoutes(routes);
     this.initializeSwagger();
@@ -39,27 +29,6 @@ class App {
 
   public getServer() {
     return this.app;
-  }
-
-  private connectToDatabase() {
-    DB.sequelize.sync({ force: false });
-  }
-
-  private initializeMiddlewares() {
-    if (this.env === 'production') {
-      this.app.use(morgan('combined', { stream }));
-      this.app.use(cors({ origin: 'your.domain.com', credentials: true }));
-    } else if (this.env === 'development') {
-      this.app.use(morgan('dev', { stream }));
-      this.app.use(cors({ origin: true, credentials: true }));
-    }
-
-    this.app.use(hpp());
-    this.app.use(helmet());
-    this.app.use(compression());
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(cookieParser());
   }
 
   private initializeRoutes(routes: Routes[]) {

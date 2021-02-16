@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateUserDto } from '../dtos/users.dto';
+import { RequestWithFile } from '../interfaces/auth.interface';
 import { User } from '../interfaces/domain.interface';
-import userService from '../services/users.service';
+import UploadService from '../services/upload.service';
+import UserService from '../services/users.service';
 
 class UsersController {
-  public userService = new userService();
+  public userService = new UserService();
+  public uploadService = new UploadService();
 
   public getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -45,6 +48,20 @@ class UsersController {
       const updateUserData: User = await this.userService.updateUser(userId, userData);
       res.status(200).json({ data: updateUserData, message: 'updated' });
     } catch (error) {
+      next(error);
+    }
+  };
+
+  public uploadUserAvater = async (req: RequestWithFile, res: Response, next: NextFunction) => {
+    const userId = req.user.id;
+    const avatarFile = req.file;
+
+    try {
+      const updateUserData = await this.uploadService.uploadUserAvatar({ userId, avatarFile });
+      console.log('result ', updateUserData);
+      res.status(200).json({ data: updateUserData, message: 'updated' });
+    } catch (error) {
+      console.log('upload error ', error);
       next(error);
     }
   };

@@ -37,17 +37,8 @@ sequelize
       )}
       `,
     );
-    // console.log(
-    //   `🚀 The database is connected.${JSON.stringify(config[env].host)}${JSON.stringify(config[env].database)}${JSON.stringify(
-    //     config[env].username,
-    //   )}${JSON.stringify(config[env].password)}`,
-    // );
   })
   .catch((error: Error) => {
-    console.log(
-      `${JSON.stringify(config[env].host)} ${JSON.stringify(config[env].database)} ${JSON.stringify(config[env].username)} 
-      ${JSON.stringify(config[env].password)}`,
-    );
     logger.error(`🔴 Unable to connect to the sdatabase: ${error}.`);
   });
 
