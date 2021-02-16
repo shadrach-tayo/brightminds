@@ -25,6 +25,7 @@ function expressLoader(app) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
+  return;
 }
 
 export default expressLoader;

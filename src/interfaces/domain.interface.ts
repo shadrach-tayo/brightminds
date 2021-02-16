@@ -7,7 +7,7 @@ export interface BaseDomain {
 }
 
 export interface Admin extends BaseDomain {
-  email: string;
+  email?: string;
   firstname: string;
   lastname: string;
   password: string;

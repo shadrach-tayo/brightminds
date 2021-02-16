@@ -22,9 +22,6 @@ class App {
     this.app = express();
     this.port = process.env.PORT || 3000;
     this.env = process.env.NODE_ENV || 'development';
-
-    // this.connectToDatabase();
-    // this.initializeMiddlewares();
     loaders(this.app);
     this.initializeRoutes(routes);
     this.initializeSwagger();
@@ -39,27 +36,6 @@ class App {
 
   public getServer() {
     return this.app;
-  }
-
-  private connectToDatabase() {
-    DB.sequelize.sync({ force: false });
-  }
-
-  private initializeMiddlewares() {
-    if (this.env === 'production') {
-      this.app.use(morgan('combined', { stream }));
-      this.app.use(cors({ origin: 'your.domain.com', credentials: true }));
-    } else if (this.env === 'development') {
-      this.app.use(morgan('dev', { stream }));
-      this.app.use(cors({ origin: true, credentials: true }));
-    }
-
-    this.app.use(hpp());
-    this.app.use(helmet());
-    this.app.use(compression());
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(cookieParser());
   }
 
   private initializeRoutes(routes: Routes[]) {

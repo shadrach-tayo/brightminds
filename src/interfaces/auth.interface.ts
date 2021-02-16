@@ -13,3 +13,7 @@ export interface TokenData {
 export interface RequestWithUser extends Request {
   user: User;
 }
+export interface RequestWithFile extends Request {
+  user?: User;
+  file: any;
+}

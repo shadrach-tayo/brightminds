@@ -15,7 +15,7 @@ deploy:
     region: us-east-1
     app: bright-minds
     env: Brightminds-env
-    bucket_name: elasticbeanstalk-us-east-1-751808579985
+    bucket_name: elasticbeanstalk-us-east-1-995117905859
     bucket_path: bright-minds
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY

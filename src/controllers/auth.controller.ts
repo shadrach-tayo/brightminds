@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateAdminDto, CreateUserDto } from '../dtos/users.dto';
 import AuthService from '../services/auth.service';
-import { Admin, User } from '../interfaces/domain.interface';
+import { Admin } from '../interfaces/domain.interface';
 import { RequestWithUser } from '../interfaces/auth.interface';
 
 class AuthController {
@@ -11,21 +11,21 @@ class AuthController {
     const userData: CreateUserDto = req.body;
 
     try {
-      const signUpUserData: User = await this.authService.signup(userData);
+      const signUpUserData = await this.authService.signup(userData);
       res.status(201).json({ data: signUpUserData, message: 'signup' });
     } catch (error) {
+      console.log('error ', error.toString(), error);
       next(error);
     }
   };
 
   public logIn = async (req: Request, res: Response, next: NextFunction) => {
     const userData: CreateUserDto = req.body;
-    console.log('login ', userData);
+
     try {
       const data = await this.authService.login(userData);
       res.status(200).json({ data, message: 'login' });
     } catch (error) {
-      console.log('error ', error.toString(), error);
       next(error);
     }
   };

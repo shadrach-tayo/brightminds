@@ -68,7 +68,7 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
         type: DataTypes.STRING(45),
       },
 
-      avatar_url: DataTypes.STRING(45),
+      avatar_url: DataTypes.STRING(255),
 
       dob: DataTypes.DATE,
 
