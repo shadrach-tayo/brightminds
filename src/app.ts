@@ -1,16 +1,10 @@
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import express from 'express';
-import helmet from 'helmet';
-import hpp from 'hpp';
-import morgan from 'morgan';
-import compression from 'compression';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
-import DB from './database';
+// import DB from './database';
 import Routes from './interfaces/routes.interface';
 import errorMiddleware from './common/middlewares/error.middleware';
-import { logger, stream } from './utils/logger';
+import { logger } from './utils/logger';
 import loaders from './loaders';
 
 class App {

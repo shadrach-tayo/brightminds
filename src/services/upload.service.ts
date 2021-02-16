@@ -6,7 +6,7 @@ import DB from '../database';
 // import { isEmpty } from '../utils/util';
 import aws from 'aws-sdk';
 import fs from 'fs';
-import path from 'path';
+// import path from 'path';
 
 class UploadService {
   public users = DB.Users;

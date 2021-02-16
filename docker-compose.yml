@@ -37,9 +37,9 @@ services:
   #   image: mysql:5.7
   #   container_name: mysql
   #   environment:
-  #     MYSQL_ROOT_USER: root
-  #     MYSQL_ROOT_PASSWORD: password
-  #     MYSQL_DATABASE: brightminds
+  #     MYSQL_ROOT_USER:
+  #     MYSQL_ROOT_PASSWORD:
+  #     MYSQL_DATABASE:
   #   ports:
   #     - "3306:3306"
     networks:
