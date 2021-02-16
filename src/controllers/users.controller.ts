@@ -58,10 +58,10 @@ class UsersController {
 
     try {
       const updateUserData = await this.uploadService.uploadUserAvatar({ userId, avatarFile });
-      console.log('result ', updateUserData);
+      // console.log('result ', updateUserData);
       res.status(200).json({ data: updateUserData, message: 'updated' });
     } catch (error) {
-      console.log('upload error ', error);
+      // console.log('upload error ', error);
       next(error);
     }
   };

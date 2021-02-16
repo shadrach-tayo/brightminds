@@ -27,10 +27,9 @@ class UploadService {
     let result;
     await this.s3.upload(params, async (err, data) => {
       if (err) {
-        console.log('Error occured while trying to upload to S3 bucket', err);
+        // console.log('Error occured while trying to upload to S3 bucket', err);
         throw new HttpException(409, 'We could not upload you image avatar now, try again later');
       }
-      console.log('file path ', avatarFile.path);
       if (data) {
         fs.unlinkSync(process.cwd() + '/' + avatarFile.path); // Empty temp folder
         const locationUrl = data.Location;

@@ -14,7 +14,7 @@ class AuthController {
       const signUpUserData = await this.authService.signup(userData);
       res.status(201).json({ data: signUpUserData, message: 'signup' });
     } catch (error) {
-      console.log('error ', error.toString(), error);
+      // console.log('error ', error.toString(), error);
       next(error);
     }
   };
