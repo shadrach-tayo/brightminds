@@ -8,6 +8,8 @@
 .aws-secret
 .env.production
 new_user_credentials.csv
+brightminds.pem
+
 
 # temp
 /temp
