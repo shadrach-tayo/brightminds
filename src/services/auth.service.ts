@@ -15,8 +15,8 @@ class AuthService {
 
   public async signup(userData: CreateUserDto): Promise<{ token: string; user: User }> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
-    const findUser: User = await this.users.findOne({ where: { [Op.or]: [{ email: userData.email }, { phoneNumber: userData.phoneNumber }] } });
-    if (findUser) throw new HttpException(401, `the email ${userData.email} or phone number ${userData.phoneNumber} already exists`);
+    const findUser: User = await this.users.findOne({ where: { [Op.or]: [{ email: userData.email || '' }, { phoneNumber: userData.phoneNumber }] } });
+    if (findUser) throw new HttpException(401, `the email or phone number already exists`);
 
     if (!userData.address) throw new HttpException(400, 'Invalid Address data');
     const userAddress: Address = await this.address.create(userData.address);

@@ -1,4 +1,4 @@
-import { IsDateString, IsEmail, IsNotEmptyObject, IsObject, IsPhoneNumber, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsDateString, IsEmail, IsNotEmptyObject, IsObject, IsOptional, IsPhoneNumber, IsString, MaxLength, MinLength } from 'class-validator';
 import { Admin, User } from '../interfaces/domain.interface';
 import { CreateAddressDto } from './resources.dto';
 
@@ -14,6 +14,7 @@ export class LoginUserDto {
 }
 export class CreateUserDto implements User {
   @IsEmail()
+  @IsOptional()
   public email: string;
 
   @IsString()
