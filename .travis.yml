@@ -13,11 +13,11 @@ script:
 deploy:
     provider: elasticbeanstalk
     region: us-east-1
-    app: bright-minds
-    env: Brightminds-env
+    app: bright-mind
+    env: Brightmind-env
     bucket_name: elasticbeanstalk-us-east-1-751808579985
-    bucket_path: bright-minds
+    bucket_path: bright-mind
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     on:
-        branch: staging
+        branch: dev
