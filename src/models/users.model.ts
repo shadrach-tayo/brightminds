@@ -93,5 +93,11 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
 
   UserModel.belongsTo(AddressModel);
 
+  UserModel.prototype.toJSON = function () {
+    const values = Object.assign({}, this.get());
+    delete values.password;
+    return values;
+  };
+
   return UserModel;
 }

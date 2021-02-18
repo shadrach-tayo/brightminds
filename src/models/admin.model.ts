@@ -74,6 +74,11 @@ export default function adminFactory(sequelize: Sequelize): typeof AdminModel {
     },
   );
 
+  AdminModel.prototype.toJSON = function () {
+    const values = Object.assign({}, this.get());
+    delete values.password;
+    return values;
+  };
   // AdminModel.
   // };
 
