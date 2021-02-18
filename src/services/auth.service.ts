@@ -26,7 +26,6 @@ class AuthService {
 
     // log user in and return userdata and token
     const loginCredentials: CreateUserDto = { phoneNumber: createUserData.phoneNumber, password: userData.password } as CreateUserDto;
-
     const loginUserData = await this.login(loginCredentials);
     return loginUserData;
   }

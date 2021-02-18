@@ -3,6 +3,7 @@ import { CreateAdminDto, CreateUserDto } from '../dtos/users.dto';
 import AuthService from '../services/auth.service';
 import { Admin } from '../interfaces/domain.interface';
 import { RequestWithUser } from '../interfaces/auth.interface';
+import HttpException from '../exceptions/HttpException';
 
 class AuthController {
   public authService = new AuthService();
@@ -14,8 +15,9 @@ class AuthController {
       const signUpUserData = await this.authService.signup(userData);
       res.status(201).json({ data: signUpUserData, message: 'signup' });
     } catch (error) {
-      // console.log('error ', error.toString(), error);
-      next(error);
+      // console.log('error ', error, error.get());
+      const message = error?.errors[0]?.message;
+      next(new HttpException(400, message));
     }
   };
 
@@ -26,7 +28,8 @@ class AuthController {
       const data = await this.authService.login(userData);
       res.status(200).json({ data, message: 'login' });
     } catch (error) {
-      next(error);
+      const message = error?.errors[0]?.message;
+      next(new HttpException(401, message));
     }
   };
 
@@ -37,7 +40,8 @@ class AuthController {
       const signUpUserData: Admin = await this.authService.createAdmin(userData);
       res.status(201).json({ data: signUpUserData, message: 'signup' });
     } catch (error) {
-      next(error);
+      const message = error?.errors[0]?.message;
+      next(new HttpException(401, message));
     }
   };
 
@@ -48,7 +52,8 @@ class AuthController {
       const data = await this.authService.loginAdmin(userData);
       res.status(200).json({ data, message: 'login' });
     } catch (error) {
-      next(error);
+      const message = error?.errors[0]?.message;
+      next(new HttpException(401, message));
     }
   };
 
@@ -60,7 +65,8 @@ class AuthController {
       res.setHeader('Set-Cookie', ['Authorization=; Max-age=0']);
       res.status(200).json({ data: { message: 'logout successful' }, message: 'logout' });
     } catch (error) {
-      next(error);
+      const message = error?.errors[0]?.message;
+      next(new HttpException(401, message));
     }
   };
 }

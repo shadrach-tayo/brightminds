@@ -24,9 +24,9 @@ export interface User extends Admin {
 }
 
 export interface Address extends BaseDomain {
-  city: string;
-  state?: string;
-  lga?: string;
+  city?: string;
+  state: string;
+  lga: string;
   street?: string;
 }
 

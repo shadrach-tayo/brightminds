@@ -5,9 +5,10 @@ export type AddressCreationAttributes = Optional<Address, 'street' | 'state' | '
 
 export class AddressModel extends Model<Address, AddressCreationAttributes> implements Address {
   public id: string;
-  public city: string;
+  public city?: string;
   public state: string;
   public lga: string;
+  public street?: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -23,7 +24,6 @@ export default function addressFactory(sequelize: Sequelize): typeof AddressMode
 
       city: {
         type: DataTypes.STRING(45),
-        allowNull: false,
       },
 
       state: {
@@ -38,7 +38,6 @@ export default function addressFactory(sequelize: Sequelize): typeof AddressMode
 
       street: {
         type: DataTypes.STRING(45),
-        allowNull: false,
       },
     },
     {
@@ -51,6 +50,7 @@ export default function addressFactory(sequelize: Sequelize): typeof AddressMode
   );
 
   // AddressModel.belongsTo(AddressModel, { as: 'address' });
+  AddressModel.sync({ force: true });
 
   return AddressModel;
 }
