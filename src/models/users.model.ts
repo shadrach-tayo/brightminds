@@ -33,7 +33,7 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
       },
 
       email: {
-        allowNull: false,
+        allowNull: true,
         unique: true,
         type: DataTypes.STRING(45),
       },
