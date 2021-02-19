@@ -18,7 +18,7 @@ export class CompetitionModel extends Model<Competition, CompetitionCreationAttr
   public readonly updatedAt!: Date;
 }
 
-export default function competitionFactory(sequelize: Sequelize, { AddressModel, TransactionModel }): typeof CompetitionModel {
+export default function competitionFactory(sequelize: Sequelize): typeof CompetitionModel {
   CompetitionModel.init(
     {
       id: {
@@ -53,30 +53,6 @@ export default function competitionFactory(sequelize: Sequelize, { AddressModel,
         type: DataTypes.DATE,
       },
 
-      // entry_fee: {
-      //   type: DataTypes.UUID,
-      //   references: {
-      //     model: 'charges',
-      //     key: 'id',
-      //   },
-      // },
-
-      // location: {
-      //   type: DataTypes.UUID,
-      //   references: {
-      //     model: 'address',
-      //     key: 'id',
-      //   },
-      // },
-
-      // transaction: {
-      //   type: DataTypes.UUID,
-      //   references: {
-      //     model: 'transactions',
-      //     key: 'id',
-      //   },
-      // },
-
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
@@ -89,13 +65,14 @@ export default function competitionFactory(sequelize: Sequelize, { AddressModel,
     },
     {
       tableName: 'competitions',
+      modelName: 'Competitions',
       sequelize,
     },
   );
 
-  CompetitionModel.belongsTo(AddressModel, { as: 'address' });
+  // CompetitionModel.belongsTo(AddressModel, { as: 'address' });
   // CompetitionModel.belongsTo(AddressModel, { foreignKey: 'charge' }); // link to charge
-  CompetitionModel.belongsTo(TransactionModel, { as: 'transaction' }); // transaction
+  // CompetitionModel.belongsTo(TransactionModel, { as: 'transaction' }); // transaction
 
   return CompetitionModel;
 }

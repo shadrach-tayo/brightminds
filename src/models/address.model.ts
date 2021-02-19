@@ -42,6 +42,7 @@ export default function addressFactory(sequelize: Sequelize): typeof AddressMode
     },
     {
       tableName: 'address',
+      modelName: 'Address',
       name: {
         singular: 'address',
       },

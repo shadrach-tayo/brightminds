@@ -45,8 +45,8 @@ sequelize
 const AdminModel = adminFactory(sequelize);
 const AddressModel = addressFactory(sequelize);
 const TransactionModel = transactionFactory(sequelize);
-const CompetitionModel = competitionFactory(sequelize, { TransactionModel, AddressModel });
-const EventModel = eventFactory(sequelize, { AddressModel, TransactionModel });
+const CompetitionModel = competitionFactory(sequelize);
+const EventModel = eventFactory(sequelize, { AddressModel });
 const UserModel = userFactory(sequelize, { AddressModel });
 
 const DB = {

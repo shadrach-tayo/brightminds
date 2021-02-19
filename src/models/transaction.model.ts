@@ -1,8 +1,6 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 import { TransactionStatus } from '../interfaces/domain.enum';
 import { Transaction } from '../interfaces/domain.interface';
-// import { CompetitionModel } from './competition.model';
-// import { EventModel } from './events.model';
 
 export type TransactionCreationAttributes = Optional<Transaction, 'event' | 'competition'>;
 
@@ -42,6 +40,7 @@ export default function transactionFactory(sequelize: Sequelize): typeof Transac
     },
     {
       tableName: 'transactions',
+      modelName: 'Transactions',
       sequelize,
     },
   );

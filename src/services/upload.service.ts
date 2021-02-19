@@ -1,11 +1,9 @@
-// import bcrypt from 'bcrypt';
-// import { CreateUserDto } from '../dtos/users.dto';
 import HttpException from '../exceptions/HttpException';
 import { User } from '../interfaces/domain.interface';
 import DB from '../database';
-// import { isEmpty } from '../utils/util';
 import aws from 'aws-sdk';
 import fs from 'fs';
+import { logger } from '../utils/logger';
 class UploadService {
   public users = DB.Users;
   public s3 = new aws.S3();
@@ -24,25 +22,25 @@ class UploadService {
       Key: `${this.USER_AVATAR_KEY}/${userId}.${fileExt}`,
     };
 
-    let result;
-    await this.s3.upload(params, async (err, data) => {
-      if (err) {
-        // console.log('Error occured while trying to upload to S3 bucket', err);
-        throw new HttpException(409, 'We could not upload you image avatar now, try again later');
-      }
-      if (data) {
-        fs.unlinkSync(process.cwd() + '/' + avatarFile.path); // Empty temp folder
-        const locationUrl = data.Location;
+    const result = await this.s3
+      .upload(params)
+      .promise()
+      .then(async data => {
+        if (data) {
+          fs.unlinkSync(process.cwd() + '/' + avatarFile.path); // Empty temp folder
+          const locationUrl = data.Location;
 
-        await this.users.update({ avatar_url: locationUrl }, { where: { id: userId } });
-        const updatedUser: User = await this.users.findByPk(userId, { attributes: ['avatar_url'] });
-        result = updatedUser;
-        // return updatedUser;
-      } else {
-        throw new HttpException(409, 'We could not upload you image avatar now, try again later');
-      }
-    });
-    // const allUser: User[] = await this.users.findAll();
+          await this.users.update({ avatar_url: locationUrl }, { where: { id: userId } });
+          const updatedUser: User = await this.users.findByPk(userId, { attributes: ['avatar_url'] });
+          return updatedUser;
+        } else {
+          throw new HttpException(409, 'We could not upload you image avatar now, try again later');
+        }
+      })
+      .catch(err => {
+        logger.error(err.message, err.code);
+        throw new HttpException(500, "You can't upload user avatar for now, we are working to fix it");
+      });
     return result;
   }
 }

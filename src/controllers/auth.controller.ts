@@ -28,7 +28,7 @@ class AuthController {
       const data = await this.authService.login(userData);
       res.status(200).json({ data, message: 'login' });
     } catch (error) {
-      const message = error?.errors[0]?.message;
+      const message = (error.errors && error.errors[0]?.message) || error.message;
       next(new HttpException(401, message));
     }
   };

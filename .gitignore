@@ -4,6 +4,7 @@
 /node_modules
 
 # env files
+.cert
 .env
 .aws-secret
 .env.production

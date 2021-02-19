@@ -22,7 +22,7 @@ class AuthService {
     const userAddress: Address = await this.address.create(userData.address);
 
     const role = UserTypeEnum.MEMBER;
-    const createUserData: User = await this.users.create({ ...userData, role, addressId: userAddress.id });
+    const createUserData: User = await this.users.create({ ...userData, role, addressId: userAddress.id }, { include: DB.sequelize.models.Address });
 
     // log user in and return userdata and token
     const loginCredentials: CreateUserDto = { phoneNumber: createUserData.phoneNumber, password: userData.password } as CreateUserDto;
@@ -57,8 +57,17 @@ class AuthService {
 
   public async login(userData: CreateUserDto): Promise<{ token: string; user: User }> {
     if (isEmpty(userData)) throw new HttpException(400, 'Invalid input');
+    let user: User;
+    try {
+      user = await this.users.findOne({
+        where: { phoneNumber: userData.phoneNumber },
+        include: DB.sequelize.models.Address, // include: [{ model: DB.sequelize.models.Address, where: { id: col('Users.address_id') } }],
+      });
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
 
-    const user: User = await this.users.findOne({ where: { phoneNumber: userData.phoneNumber } });
     if (!user) throw new HttpException(401, `The number ${userData.phoneNumber} is not registered`);
 
     if (!(await isPasswordMatching(userData.password, user.password))) throw new HttpException(401, 'Incorrect phone number or password');

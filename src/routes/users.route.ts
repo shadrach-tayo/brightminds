@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import UsersController from '../controllers/users.controller';
-// import { CreateUserDto } from '../dtos/users.dto';
 import Route from '../interfaces/routes.interface';
-// import validationMiddleware from '../common/middlewares/validation.middleware';
 import multer, { FileFilterCallback } from 'multer';
 import authMiddleware from '../common/middlewares/auth.middleware';
 import HttpException from '../exceptions/HttpException';

@@ -70,6 +70,7 @@ export default function adminFactory(sequelize: Sequelize): typeof AdminModel {
         },
       },
       tableName: 'admins',
+      modelName: 'Admins',
       sequelize,
     },
   );
@@ -79,8 +80,6 @@ export default function adminFactory(sequelize: Sequelize): typeof AdminModel {
     delete values.password;
     return values;
   };
-  // AdminModel.
-  // };
 
   return AdminModel;
 }

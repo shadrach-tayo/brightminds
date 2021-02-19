@@ -18,7 +18,7 @@ export class EventModel extends Model<Event, EventCreationAttributes> implements
   public readonly updatedAt!: Date;
 }
 
-export default function eventFactory(sequelize: Sequelize, { AddressModel, TransactionModel }): typeof EventModel {
+export default function eventFactory(sequelize: Sequelize, { AddressModel }): typeof EventModel {
   EventModel.init(
     {
       id: {
@@ -65,13 +65,14 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel, Trans
     },
     {
       tableName: 'events',
+      modelName: 'Events',
       sequelize,
     },
   );
 
   EventModel.belongsTo(AddressModel);
   // EventModel.belongsTo(AddressModel, { as: 'charge' }); // link to charge
-  EventModel.belongsTo(TransactionModel); // transaction
+  // EventModel.belongsTo(TransactionModel); // transaction
 
   return EventModel;
 }

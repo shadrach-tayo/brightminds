@@ -87,6 +87,7 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
         },
       },
       tableName: 'users',
+      modelName: 'Users',
       sequelize,
     },
   );
