@@ -21,6 +21,7 @@ export interface User extends Admin {
   gender: string;
   addressId?: string;
   school: string;
+  username: string;
 }
 
 export interface Address extends BaseDomain {
@@ -78,4 +79,36 @@ export interface Ticket extends BaseDomain {
   fee: Charge;
   total_price: number;
   transaction: string;
+}
+
+export interface Plan extends BaseDomain {
+  price: string;
+  description?: string;
+  // duration: string;
+  plan_name: string;
+  is_active: boolean;
+  valid_from: string;
+  valid_to: string;
+}
+
+export interface Subscription extends BaseDomain {
+  amount: string;
+  userId?: string;
+  status?: number;
+  valid_to?: string;
+  valid_from?: string;
+  transaction_ref: string;
+  planId?: string;
+  date_subscribed?: string;
+  date_unsubscribed?: string;
+}
+
+export interface Invoice extends BaseDomain {
+  description?: string;
+  userId?: string;
+  amount: string;
+  transaction_ref: string;
+  subscriptionId?: string;
+  planId?: string;
+  date_paid: string;
 }

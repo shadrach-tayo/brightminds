@@ -1,11 +1,14 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+
 const dbConfig = {
   development: {
     username: 'root',
     password: 'password',
     database: 'brightminds',
     host: '127.0.0.1',
+    logging: true,
     dialect: 'mysql',
-    PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
   },
   test: {
     username: 'root',
@@ -20,8 +23,7 @@ const dbConfig = {
     database: process.env.MYSQL_DATABASE,
     host: process.env.MYSQL_HOST,
     dialect: 'mysql',
-    PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
   },
 };
 
-export default dbConfig;
+module.exports = dbConfig;

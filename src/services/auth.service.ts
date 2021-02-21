@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
 import { UserTypeEnum } from '../common/UserTypeEnum';
-import DB from '../database';
-import { CreateAdminDto, CreateUserDto } from '../dtos/users.dto';
+import DB from '../../database';
+import { CreateAdminDto, CreateUserDto, LoginUserDto } from '../dtos/users.dto';
 import HttpException from '../exceptions/HttpException';
 import { DataStoredInToken, TokenData } from '../interfaces/auth.interface';
 import { Address, Admin, User } from '../interfaces/domain.interface';
@@ -15,8 +15,11 @@ class AuthService {
 
   public async signup(userData: CreateUserDto): Promise<{ token: string; user: User }> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
-    const findUser: User = await this.users.findOne({ where: { [Op.or]: [{ email: userData.email || '' }, { phoneNumber: userData.phoneNumber }] } });
-    if (findUser) throw new HttpException(401, `the email or phone number already exists`);
+    console.log('user ', userData);
+    const findUser: User = await this.users.findOne({
+      where: { [Op.or]: [{ email: userData.email || '' }, { username: userData.username }] },
+    });
+    if (findUser) throw new HttpException(401, `the username or email already exists`);
 
     if (!userData.address) throw new HttpException(400, 'Invalid Address data');
     const userAddress: Address = await this.address.create(userData.address);
@@ -25,7 +28,7 @@ class AuthService {
     const createUserData: User = await this.users.create({ ...userData, role, addressId: userAddress.id }, { include: DB.sequelize.models.Address });
 
     // log user in and return userdata and token
-    const loginCredentials: CreateUserDto = { phoneNumber: createUserData.phoneNumber, password: userData.password } as CreateUserDto;
+    const loginCredentials: LoginUserDto = { username: createUserData.username, password: userData.password } as LoginUserDto;
     const loginUserData = await this.login(loginCredentials);
     return loginUserData;
   }
@@ -55,12 +58,12 @@ class AuthService {
     return { token: tokenData.token, user };
   }
 
-  public async login(userData: CreateUserDto): Promise<{ token: string; user: User }> {
+  public async login(userData: LoginUserDto): Promise<{ token: string; user: User }> {
     if (isEmpty(userData)) throw new HttpException(400, 'Invalid input');
     let user: User;
     try {
       user = await this.users.findOne({
-        where: { phoneNumber: userData.phoneNumber },
+        where: { username: userData.username },
         include: DB.sequelize.models.Address, // include: [{ model: DB.sequelize.models.Address, where: { id: col('Users.address_id') } }],
       });
     } catch (e) {
@@ -68,9 +71,9 @@ class AuthService {
       throw e;
     }
 
-    if (!user) throw new HttpException(401, `The number ${userData.phoneNumber} is not registered`);
+    if (!user) throw new HttpException(401, `The username ${userData.username} is not registered`);
 
-    if (!(await isPasswordMatching(userData.password, user.password))) throw new HttpException(401, 'Incorrect phone number or password');
+    if (!(await isPasswordMatching(userData.password, user.password))) throw new HttpException(401, 'Incorrect password');
 
     const tokenData = this.createToken(user);
 

@@ -16,6 +16,7 @@ export class UserModel extends Model<User, UserCreationAttributes> implements Us
   public gender: string;
   public addressId: string;
   public phoneNumber: string;
+  public username: string;
   public school: string;
 
   public readonly createdAt!: Date;
@@ -72,9 +73,14 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
 
       dob: DataTypes.DATE,
 
-      phoneNumber: {
+      username: {
         allowNull: false,
         unique: true,
+        type: DataTypes.STRING(45),
+      },
+
+      phoneNumber: {
+        allowNull: false,
         type: DataTypes.STRING(14),
       },
     },

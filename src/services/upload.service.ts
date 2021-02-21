@@ -1,6 +1,6 @@
 import HttpException from '../exceptions/HttpException';
 import { User } from '../interfaces/domain.interface';
-import DB from '../database';
+import DB from '../../database';
 import aws from 'aws-sdk';
 import fs from 'fs';
 import { logger } from '../utils/logger';

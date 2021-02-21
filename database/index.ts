@@ -1,12 +1,16 @@
 import Sequelize from 'sequelize';
-import config from '../config';
-import { logger } from '../utils/logger';
-import userFactory from '../models/users.model';
-import adminFactory from '../models/admin.model';
-import eventFactory from '../models/events.model';
-import addressFactory from '../models/address.model';
-import transactionFactory from '../models/transaction.model';
-import competitionFactory from '../models/competition.model';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+import config from '../src/config';
+import { logger } from '../src/utils/logger';
+import userFactory from '../src/models/users.model';
+import adminFactory from '../src/models/admin.model';
+import eventFactory from '../src/models/events.model';
+import addressFactory from '../src/models/address.model';
+import transactionFactory from '../src/models/transaction.model';
+import competitionFactory from '../src/models/competition.model';
+import plansFactory from '../src/models/plans.model';
+import subscriptionFactory from '../src/models/subscription.model';
+import invoiceFactory from '../src/models/invoice.model';
 
 const env = process.env.NODE_ENV || 'development';
 const sequelize = new Sequelize.Sequelize(config[env].database, config[env].username, config[env].password, {
@@ -48,6 +52,9 @@ const TransactionModel = transactionFactory(sequelize);
 const CompetitionModel = competitionFactory(sequelize);
 const EventModel = eventFactory(sequelize, { AddressModel });
 const UserModel = userFactory(sequelize, { AddressModel });
+const PlansModel = plansFactory(sequelize);
+const SubscriptionModel = subscriptionFactory(sequelize, { UserModel, PlansModel });
+const InvoiceModel = invoiceFactory(sequelize, { PlansModel, SubscriptionModel, UserModel });
 
 const DB = {
   Users: UserModel,
@@ -56,6 +63,9 @@ const DB = {
   Address: AddressModel,
   Competitions: CompetitionModel,
   Transactions: TransactionModel,
+  Plans: PlansModel,
+  Subscriptions: SubscriptionModel,
+  Invoice: InvoiceModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };

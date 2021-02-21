@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import HttpException from '../../exceptions/HttpException';
 import { DataStoredInToken, RequestWithUser } from '../../interfaces/auth.interface';
-import DB from '../../database';
+import DB from '../../../database';
 
 const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
   try {
@@ -14,8 +14,9 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
       const verificationResponse = (await jwt.verify(authorization[1], secret)) as DataStoredInToken;
       const userId = verificationResponse.id;
       const findUser = await DB.Users.findByPk(userId);
-      if (findUser) {
-        req.user = findUser;
+      const findAdmin = await DB.Admins.findByPk(userId);
+      if (findUser || findAdmin) {
+        req.user = findUser || findAdmin;
         next();
       } else {
         next(new HttpException(401, 'Unauthorized access'));

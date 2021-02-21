@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User } from './domain.interface';
+import { Admin, User } from './domain.interface';
 
 export interface DataStoredInToken {
   id: string;
@@ -11,7 +11,8 @@ export interface TokenData {
 }
 
 export interface RequestWithUser extends Request {
-  user: User;
+  user: User | Admin;
+  admin: Admin;
 }
 export interface RequestWithFile extends Request {
   user?: User;

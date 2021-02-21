@@ -1,5 +1,3 @@
-// import { HttpException } from '../../exceptions/HttpException';
-// import { User } from '../../interfaces/domain.interface';
 import roles from '../roles';
 
 const grantAccess = (action, resource) => {
@@ -26,7 +24,7 @@ const grantAccess = (action, resource) => {
           });
         }
       }
-
+      console.log('verified', req.user.role);
       next();
     } catch (error) {
       res.status(401).json({

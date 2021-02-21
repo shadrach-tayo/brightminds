@@ -3,10 +3,10 @@ import { Admin, User } from '../interfaces/domain.interface';
 import { CreateAddressDto } from './resources.dto';
 
 export class LoginUserDto {
-  @IsPhoneNumber('NG', { message: 'check the length and the country code (+234)' })
-  @MinLength(11)
-  @MaxLength(14)
-  public phoneNumber: string;
+  // @IsPhoneNumber('NG', { message: 'check the length and the country code (+234)' })
+  @MinLength(3)
+  // @MaxLength(14)
+  public username: string;
 
   @IsString()
   @MinLength(6)
@@ -35,6 +35,10 @@ export class CreateUserDto implements User {
   @IsString({ message: 'Lastname is required' })
   @MinLength(3)
   public lastname: string;
+
+  @IsString({ message: 'Username is required' })
+  @MinLength(3)
+  public username: string;
 
   @IsDateString({ strict: true })
   public dob: string;
