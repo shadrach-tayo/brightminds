@@ -26,7 +26,7 @@ services:
     #   MYSQL_PORT: 3306
     volumes:
       - ./:/usr/src/app
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     restart: "unless-stopped"
     networks:
       - backend
