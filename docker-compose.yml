@@ -25,8 +25,8 @@ services:
     #   MYSQL_DATABASE: brightminds
     #   MYSQL_PORT: 3306
     volumes:
-      - ./:/app
-      - /app/node_modules
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
     restart: "unless-stopped"
     networks:
       - backend
