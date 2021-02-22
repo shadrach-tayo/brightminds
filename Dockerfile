@@ -6,7 +6,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN npm cache clean
+RUN npm cache verify
 
 RUN npm install
 
