@@ -23,6 +23,7 @@ services:
     #   MYSQL_PASSWORD: password
     #   MYSQL_HOST: mysql
     #   MYSQL_DATABASE: brightminds
+    #   MYSQL_PORT: 3306
     volumes:
       - ./:/app
       - /app/node_modules
@@ -37,13 +38,13 @@ services:
   #   image: mysql:5.7
   #   container_name: mysql
   #   environment:
-  #     MYSQL_ROOT_USER:
-  #     MYSQL_ROOT_PASSWORD:
-  #     MYSQL_DATABASE:
+  #     MYSQL_ROOT_USER: root
+  #     MYSQL_ROOT_PASSWORD: password
+  #     MYSQL_DATABASE: brightminds
   #   ports:
-  #     - "3306:3306"
-    networks:
-      - backend
+  #     - "3307:3306"
+  #   networks:
+  #     - backend
 
 networks:
   backend:
