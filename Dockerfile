@@ -6,7 +6,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN npm cache verify
+RUN rm -rf node_modules package-lock.json
 
 RUN npm install
 
