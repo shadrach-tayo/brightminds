@@ -4,6 +4,10 @@
   "description": "Nodejs typescript backend for the Indomie fan club backend",
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "12.1.0",
+    "npm": "6.9.0"
+  },
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production node build/src/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
