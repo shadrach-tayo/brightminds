@@ -52,16 +52,6 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel }): ty
         allowNull: false,
         type: DataTypes.DATE,
       },
-
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
-
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
     },
     {
       tableName: 'events',

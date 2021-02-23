@@ -27,16 +27,6 @@ export default function transactionFactory(sequelize: Sequelize): typeof Transac
       status: DataTypes.STRING(45),
 
       amount_paid: DataTypes.INTEGER,
-
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
-
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
     },
     {
       tableName: 'transactions',

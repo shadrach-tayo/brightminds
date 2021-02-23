@@ -52,16 +52,6 @@ export default function competitionFactory(sequelize: Sequelize): typeof Competi
         allowNull: false,
         type: DataTypes.DATE,
       },
-
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
-
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
     },
     {
       tableName: 'competitions',
