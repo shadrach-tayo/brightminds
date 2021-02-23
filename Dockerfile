@@ -1,14 +1,12 @@
-FROM node:14.14.0-alpine3.12
-
-# RUN mkdir -p /usr/src/app
-
-COPY . /app
+FROM node:10.9.0
 
 WORKDIR /app
 
-RUN npm cache clean --force
+COPY package*.json ./
 
 RUN npm install
+
+COPY . .
 
 EXPOSE 3000
 

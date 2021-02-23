@@ -3,7 +3,7 @@ const dbConfig = {
     username: 'root',
     password: 'password',
     database: 'brightminds',
-    host: '127.0.0.1',
+    host: process.env.MYSQL_HOST,
     port: 3306,
     dialect: 'mysql',
     PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,

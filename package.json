@@ -5,7 +5,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "npm run build && cross-env NODE_ENV=production node build/server.js",
+    "start": "npm run build && cross-env NODE_ENV=production node build/src/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "db:seed": "./node_modules/.bin/sequelize db:seed --env development --config ./database/config/index.js",
     "db:migrate": "./node_modules/.bin/sequelize db:migrate --env development --config ./database/config/index.js",

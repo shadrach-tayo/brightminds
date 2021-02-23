@@ -45,7 +45,6 @@ services:
   #     - "3307:3306"
   #   networks:
   #     - backend
-
 networks:
   backend:
     driver: bridge

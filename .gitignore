@@ -9,6 +9,7 @@
 .env.production
 new_user_credentials.csv
 brightminds.pem
+brightminds2.pem
 
 # temp
 /temp
