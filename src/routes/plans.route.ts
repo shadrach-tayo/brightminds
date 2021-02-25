@@ -3,7 +3,7 @@ import UsersController from '../controllers/users.controller';
 import Route from '../interfaces/routes.interface';
 import multer from 'multer';
 import authMiddleware from '../common/middlewares/auth.middleware';
-import { CreatePlanDto, CreateSubscriptionDto } from '../dtos/subscriptions.dto';
+import { CreatePlanDto } from '../dtos/subscriptions.dto';
 import validationMiddleware from '../common/middlewares/validation.middleware';
 import PlansController from '../controllers/plans.controller';
 import permissionMiddleWare from '../common/middlewares/permission.middleware';
@@ -32,29 +32,6 @@ class PlansRoute implements Route {
       this.plansController.getPlanById,
     );
 
-    this.router.get(
-      `${this.path}/get-subscription`,
-      authMiddleware,
-      permissionMiddleWare.grantAccess('readOwn', RESOURCES.SUBSCRIPTION),
-      this.plansController.getUserSubscription,
-    ); // on admins
-
-    this.router.get(
-      `${this.path}/get-subscriptions`,
-      authMiddleware,
-      permissionMiddleWare.grantAccess('readAny', RESOURCES.SUBSCRIPTION),
-      this.plansController.getUserSubscriptions,
-    );
-
-    this.router.post(
-      `/:id/subscribe`,
-      authMiddleware,
-      permissionMiddleWare.isSameUserOrAdmin('createOwn', RESOURCES.SUBSCRIPTION),
-      // permissionMiddleWare.grantAccess('createOwn', RESOURCES.SUBSCRIPTION),
-      validationMiddleware(CreateSubscriptionDto, 'body'),
-      this.plansController.subscribe,
-    );
-
     this.router.post(
       `${this.path}`,
       authMiddleware,
@@ -71,7 +48,7 @@ class PlansRoute implements Route {
       this.plansController.updatePlan,
     );
 
-    this.router.delete(`${this.path}/:id`, authMiddleware, this.plansController.deleteUser);
+    this.router.delete(`${this.path}/:id`, authMiddleware, this.plansController.deletePlan);
   }
 }
 

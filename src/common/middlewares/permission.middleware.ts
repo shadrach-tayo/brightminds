@@ -87,5 +87,29 @@ const isSameUserOrAdmin = (action, resource) => {
   };
 };
 
+// const isSameUser = (action, resource) => {
+//   return async (req, res, next) => {
+//     try {
+//       const userId = req.user.id;
+
+//       if (userId === updateId) return next();
+
+//       const permission = roles.can(req.user.role)[action](resource);
+
+//       if (permission.granted) return next();
+
+//       return res.status(403).json({
+//         status: 'error',
+//         message: 'Unauthorized access',
+//       });
+//     } catch (error) {
+//       res.status(401).json({
+//         status: 'error',
+//         message: error.message,
+//       });
+//     }
+//   };
+// };
+
 const permissionMiddleWare = { grantAccess, isSameUserOrAdmin };
 export default permissionMiddleWare;

@@ -22,6 +22,7 @@ const roles = (function () {
     .readAny(RESOURCES.MEMBER)
     .updateAny(RESOURCES.MEMBER)
     .deleteAny(RESOURCES.MEMBER)
+    .createAny(RESOURCES.SUBSCRIPTION)
     .readAny(RESOURCES.SUBSCRIPTION)
     .updateAny(RESOURCES.SUBSCRIPTION)
     .createAny(RESOURCES.COMPETITION)

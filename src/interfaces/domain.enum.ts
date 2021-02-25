@@ -12,6 +12,5 @@ export enum TransactionStatus {
 
 export enum SubscriptionStatus {
   FAILURE = 0,
-  PENDING = 1,
-  SUCCESS = 2,
+  SUCCESS = 1,
 }

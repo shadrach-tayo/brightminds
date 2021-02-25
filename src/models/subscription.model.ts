@@ -10,7 +10,7 @@ export class SubscriptionModel extends Model<Subscription, SubscriptionCreationA
   public valid_from: string;
   public status: number;
   public amount: string;
-  public transaction_ref: string;
+  public transaction_ref?: string;
   public planId?: string;
   public date_subscribed?: string;
   public date_unsubscribed?: string;
@@ -32,7 +32,10 @@ export default function subscriptionFactory(sequelize: Sequelize, { UserModel, P
         defaultValue: 1,
       },
 
-      amount: DataTypes.INTEGER,
+      amount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
 
       valid_from: DataTypes.DATE,
 
@@ -42,7 +45,10 @@ export default function subscriptionFactory(sequelize: Sequelize, { UserModel, P
 
       date_unsubscribed: DataTypes.DATE,
 
-      transaction_ref: DataTypes.STRING(255),
+      transaction_ref: {
+        type: DataTypes.STRING(255),
+        unique: true,
+      },
     },
     {
       tableName: 'subscription',
@@ -52,7 +58,7 @@ export default function subscriptionFactory(sequelize: Sequelize, { UserModel, P
   );
 
   SubscriptionModel.belongsTo(UserModel, { as: 'user' });
-  SubscriptionModel.belongsTo(PlansModel, { as: 'plans' });
+  SubscriptionModel.belongsTo(PlansModel);
 
   return SubscriptionModel;
 }

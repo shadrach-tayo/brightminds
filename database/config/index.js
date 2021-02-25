@@ -1,5 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env.production') });
 
 const dbConfig = {
   development: {

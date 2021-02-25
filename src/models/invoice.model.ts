@@ -27,7 +27,10 @@ export default function invoiceFactory(sequelize: Sequelize, { UserModel, PlansM
 
       amount: DataTypes.INTEGER,
 
-      transaction_ref: DataTypes.STRING(255),
+      transaction_ref: {
+        type: DataTypes.STRING(255),
+        unique: true,
+      },
 
       date_paid: DataTypes.DATE,
     },

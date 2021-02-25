@@ -84,11 +84,10 @@ export interface Ticket extends BaseDomain {
 export interface Plan extends BaseDomain {
   price: string;
   description?: string;
-  // duration: string;
   plan_name: string;
   is_active: boolean;
-  valid_from: string;
-  valid_to: string;
+  valid_from?: string;
+  valid_to?: string;
 }
 
 export interface Subscription extends BaseDomain {
@@ -97,7 +96,7 @@ export interface Subscription extends BaseDomain {
   status?: number;
   valid_to?: string;
   valid_from?: string;
-  transaction_ref: string;
+  transaction_ref?: string;
   planId?: string;
   date_subscribed?: string;
   date_unsubscribed?: string;

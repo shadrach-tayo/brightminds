@@ -28,3 +28,14 @@ export const hashPassword = (password): Promise<string> => {
     res(bcrypt.hash(password, 10));
   });
 };
+
+/**
+ *
+ * @param now current time or time to check with expiry date
+ * @param valid_to expiry date of the current subscription
+ * @returns {boolean} returns true if valid_to > now i.e the subscription has not expired
+ */
+export const compareDateFn = (now: string, valid_to: string): boolean => {
+  console.log('date > : ', new Date(now).toISOString() > new Date(valid_to).toISOString());
+  return new Date(now).toISOString() > new Date(valid_to).toISOString();
+};

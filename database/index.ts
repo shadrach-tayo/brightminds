@@ -64,7 +64,7 @@ const DB = {
   Address: AddressModel,
   Competitions: CompetitionModel,
   Transactions: TransactionModel,
-  Plans: PlansModel,
+  Plan: PlansModel,
   Subscriptions: SubscriptionModel,
   Invoice: InvoiceModel,
   sequelize, // connection instance (RAW queries)

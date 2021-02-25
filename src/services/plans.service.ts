@@ -1,7 +1,9 @@
 import HttpException from '../exceptions/HttpException';
 import { Plan, Subscription, User } from '../interfaces/domain.interface';
 import DB from '../../database';
-import { isEmpty } from '../utils/util';
+import { compareDateFn, isEmpty } from '../utils/util';
+import { Op } from 'sequelize';
+
 import { CreatePlanDto } from '../dtos/subscriptions.dto';
 import { SubscriptionStatus } from '../interfaces/domain.enum';
 import paystack from 'paystack';
@@ -10,7 +12,7 @@ const env = process.env.NODE_ENV || 'development';
 
 class PlanService {
   public users = DB.Users;
-  public plans = DB.Plans;
+  public plans = DB.Plan;
   public subcriptions = DB.Subscriptions;
   private paystack = paystack(config[env].PAYSTACK_SECRET_KEY);
 
@@ -41,7 +43,8 @@ class PlanService {
 
   public async getSubscription(userId: string): Promise<Subscription> {
     // check if user has an active subscription and abort
-    const currentSub: Subscription = await this.subcriptions.findByPk(userId, {
+    const currentSub: Subscription = await this.subcriptions.findOne({
+      where: { userId },
       include: [DB.sequelize.models.Plan],
     });
 
@@ -50,19 +53,23 @@ class PlanService {
 
   public async getSubscriptions(): Promise<Subscription[]> {
     // check if user has an active subscription and abort
-    const currentSub: Subscription[] = await this.subcriptions.findAll({ include: [DB.sequelize.models.Users, DB.sequelize.models.Plans] });
+    const currentSub: Subscription[] = await this.subcriptions.findAll({
+      include: [{ model: DB.sequelize.models.Users, as: 'user', attributes: { exclude: ['password'] } }, DB.sequelize.models.Plan],
+    });
 
     return currentSub;
   }
 
   public async subscribe(userId: string, subscriptionData: Subscription): Promise<Subscription> {
-    console.log('subscribe', userId, subscriptionData);
     // check if user has an active subscription and abort
-    const currentSub: Subscription = await this.subcriptions.findOne({ where: { userId: userId } });
+    const currentSub: Subscription = await this.subcriptions.findOne({
+      where: { [Op.or]: [{ userId: userId }, { transaction_ref: subscriptionData.transaction_ref }] },
+    });
 
     // if there's a active subscription return it
-    if (currentSub && currentSub.status === SubscriptionStatus.SUCCESS /*|| currentSub.status === SubscriptionStatus.PENDING */) {
-      return currentSub;
+    if (currentSub && compareDateFn(new Date().toISOString(), currentSub.valid_to)) {
+      throw new HttpException(200, 'You alread have an active subscription');
+      // return currentSub;
     }
 
     const currentUser: User = await this.users.findByPk(userId);
@@ -80,8 +87,10 @@ class PlanService {
 
       const newSub = await this.subcriptions.create({
         ...subscriptionData,
+        status: SubscriptionStatus.SUCCESS,
         userId: currentUser.id,
         planId: currentPlan.id,
+        date_subscribed: new Date().toISOString(),
         valid_from: currentPlan.valid_from,
         valid_to: currentPlan.valid_to,
       });
@@ -92,6 +101,62 @@ class PlanService {
     } else {
       throw new HttpException(400, 'Transaction not successful');
     }
+  }
+
+  public async subscribeUser(userId: string, subscriptionData: Subscription): Promise<Subscription> {
+    // check if user has an active subscription and abort
+    const currentSub: Subscription = await this.subcriptions.findOne({
+      where: { [Op.or]: [{ userId: userId }, { transaction_ref: subscriptionData.transaction_ref }] },
+    });
+
+    // if there's a active subscription return it
+    if (currentSub && compareDateFn(new Date().toISOString(), currentSub.valid_to)) {
+      throw new HttpException(200, 'You already have an active subscription');
+      // return currentSub;
+    }
+
+    const currentUser: User = await this.users.findByPk(userId);
+    const currentPlan: Plan = await this.plans.findByPk(subscriptionData.planId);
+
+    let res, newSub;
+
+    if (subscriptionData.transaction_ref) {
+      // verify payment
+      res = await this.paystack.transaction.verify(subscriptionData.transaction_ref);
+
+      if (res.status === false) {
+        throw new HttpException(401, res.message);
+      }
+
+      if (res.data.status === 'success') {
+        newSub = await this.subcriptions.upsert({
+          ...subscriptionData,
+          status: SubscriptionStatus.SUCCESS,
+          userId: currentUser.id,
+          planId: currentPlan.id,
+          date_subscribed: new Date().toISOString(),
+          valid_from: currentPlan.valid_from,
+          valid_to: currentPlan.valid_to,
+        });
+        return newSub;
+      } else {
+        throw new HttpException(400, 'Transaction not successful');
+      }
+    }
+    //  create new subscription or update current inactive sub to unpaid subscripton for user
+
+    newSub = await this.subcriptions.create({
+      ...subscriptionData,
+      status: SubscriptionStatus.SUCCESS,
+      userId: currentUser.id,
+      planId: currentPlan.id,
+      date_subscribed: new Date().toISOString(),
+      valid_from: currentPlan.valid_from,
+      valid_to: currentPlan.valid_to,
+    });
+
+    return newSub;
+    // create  invoice for current subscription
   }
 
   public async verifySubscription(ref: string): Promise<any> {

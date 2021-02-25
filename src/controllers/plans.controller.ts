@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreatePlanDto, CreateSubscriptionDto } from '../dtos/subscriptions.dto';
+import { AdminCreateSubscriptionDto, CreatePlanDto, CreateSubscriptionDto } from '../dtos/subscriptions.dto';
 // import { CreateUserDto } from '../dtos/users.dto';
 import { RequestWithUser } from '../interfaces/auth.interface';
 import { Plan, Subscription, User } from '../interfaces/domain.interface';
@@ -54,12 +54,27 @@ class PlansController {
 
   public subscribe = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const subData: CreateSubscriptionDto = req.body;
-    const userId: string = req.params.id;
+    const userId: string = req.user.id;
+    console.log('user id ', userId);
 
     try {
       const data: Subscription = await this.planService.subscribe(userId, subData);
       res.status(201).json({ data, message: 'success' });
     } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
+  public subscribeUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const subData: AdminCreateSubscriptionDto = req.body;
+    const userId: string = subData.userId;
+    console.log('user id ', userId);
+
+    try {
+      const data: Subscription = await this.planService.subscribeUser(userId, subData);
+      res.status(201).json({ data, message: 'success' });
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   };
@@ -110,7 +125,18 @@ class PlansController {
   //   }
   // };
 
-  public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  public deletePlan = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = Number(req.params.id);
+
+    try {
+      const deleteUserData: User = await this.userService.deleteUserData(userId);
+      res.status(200).json({ data: deleteUserData, message: 'deleted' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public deleteSubscription = async (req: Request, res: Response, next: NextFunction) => {
     const userId = Number(req.params.id);
 
     try {
