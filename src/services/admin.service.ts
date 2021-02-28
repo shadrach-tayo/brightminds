@@ -1,7 +1,7 @@
-import bcrypt, { hash } from 'bcrypt';
-import { CreateAdminDto, CreateUserDto } from '../dtos/users.dto';
+// import bcrypt, { hash } from 'bcrypt';
+// import { CreateAdminDto, CreateUserDto } from '../dtos/users.dto';
 import HttpException from '../exceptions/HttpException';
-import { Admin, User } from '../interfaces/domain.interface';
+import { Admin } from '../interfaces/domain.interface';
 import DB from '../../database';
 import { hashPassword, isEmpty } from '../utils/util';
 import { InvalidData } from '../exceptions';
