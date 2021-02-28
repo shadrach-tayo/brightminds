@@ -58,7 +58,7 @@ export default function subscriptionFactory(sequelize: Sequelize, { UserModel, P
   );
 
   SubscriptionModel.belongsTo(UserModel, { as: 'user' });
-  SubscriptionModel.belongsTo(PlansModel);
+  SubscriptionModel.belongsTo(PlansModel, { as: 'plan' });
 
   return SubscriptionModel;
 }

@@ -4,6 +4,10 @@ import Route from '../interfaces/routes.interface';
 import multer, { FileFilterCallback } from 'multer';
 import authMiddleware from '../common/middlewares/auth.middleware';
 import HttpException from '../exceptions/HttpException';
+import permissionMiddleWare from '../common/middlewares/permission.middleware';
+import { RESOURCES } from '../common/enum';
+import validationMiddleware from '../common/middlewares/validation.middleware';
+import { CreateUserDto } from '../dtos/users.dto';
 class UsersRoute implements Route {
   public path = '/users';
   public router = Router();
@@ -28,10 +32,18 @@ class UsersRoute implements Route {
 
   private initializeRoutes() {
     this.router.post(`${this.path}/upload-avatar`, authMiddleware, this.upload.single('avatar'), this.usersController.uploadUserAvater); // isSameUserOrCanEdit
-    // this.router.get(`${this.path}`, this.usersController.getUsers);
+    this.router.get(`${this.path}`, authMiddleware, permissionMiddleWare.grantAccess('readAny', RESOURCES.MEMBER), this.usersController.getUsers);
     // this.router.get(`${this.path}/:id(\\d+)`, this.usersController.getUserById);
     // this.router.post(`${this.path}`, validationMiddleware(CreateUserDto, 'body'), this.usersController.createUser);
-    // this.router.put(`${this.path}/:id(\\d+)`, validationMiddleware(CreateUserDto, 'body', true), this.usersController.updateUser);
+
+    this.router.put(
+      `${this.path}/:id`,
+      authMiddleware,
+      permissionMiddleWare.isSameUserOrAdmin('updateAny', RESOURCES.MEMBER),
+      validationMiddleware(CreateUserDto, 'body', true),
+      this.usersController.updateUser,
+    );
+
     // this.router.delete(`${this.path}/:id(\\d+)`, this.usersController.deleteUser);
   }
 }

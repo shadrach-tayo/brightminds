@@ -19,6 +19,7 @@ const roles = (function () {
 
   ac.grant(UserTypeEnum.ADMIN)
     .extend(UserTypeEnum.MEMBER)
+    .createAny(RESOURCES.MEMBER)
     .readAny(RESOURCES.MEMBER)
     .updateAny(RESOURCES.MEMBER)
     .deleteAny(RESOURCES.MEMBER)
@@ -40,6 +41,7 @@ const roles = (function () {
 
   ac.grant(UserTypeEnum.SUPER_ADMIN)
     .extend(UserTypeEnum.ADMIN)
+    .readAny(RESOURCES.ADMIN)
     .deleteAny(RESOURCES.ADMIN)
     .createAny(RESOURCES.ADMIN)
     .updateAny(RESOURCES.ADMIN)

@@ -22,6 +22,7 @@ export interface User extends Admin {
   addressId?: string;
   school: string;
   username: string;
+  address?: Record<string, any>;
 }
 
 export interface Address extends BaseDomain {

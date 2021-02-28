@@ -21,6 +21,16 @@ class PlansController {
     }
   };
 
+  public getSubcribedUsers = async (req: Request, res: Response, next: NextFunction) => {
+    const planId = req.params.id;
+    try {
+      const data: Subscription[] = await this.planService.getSubscribedUsers(planId);
+      res.status(200).json({ data, message: '' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public getActivePlans = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data: Plan[] = await this.planService.findActivePlans();

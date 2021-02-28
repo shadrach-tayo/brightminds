@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateUserDto } from '../dtos/users.dto';
-import { RequestWithFile } from '../interfaces/auth.interface';
+import { RequestWithFile, RequestWithUser } from '../interfaces/auth.interface';
 import { User } from '../interfaces/domain.interface';
 import UploadService from '../services/upload.service';
 import UserService from '../services/users.service';
@@ -40,9 +40,9 @@ class UsersController {
     }
   };
 
-  public updateUser = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
-    const userData: User = req.body;
+  public updateUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const userId = req.user.id;
+    const userData: CreateUserDto = req.body;
 
     try {
       const updateUserData: User = await this.userService.updateUser(userId, userData);

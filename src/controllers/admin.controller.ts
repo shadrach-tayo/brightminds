@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateUserDto } from '../dtos/users.dto';
-import { User } from '../interfaces/domain.interface';
+import { RequestWithUser } from '../interfaces/auth.interface';
+import { Admin, User } from '../interfaces/domain.interface';
+import AdminService from '../services/admin.service';
 import UploadService from '../services/upload.service';
 import UserService from '../services/users.service';
 
 class AdminController {
   public userService = new UserService();
+  public adminService = new AdminService();
   public uploadService = new UploadService();
 
   public getAdmin = async (req: Request, res: Response, next: NextFunction) => {
@@ -18,34 +21,23 @@ class AdminController {
   };
 
   public getAdminById = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
+    const id = req.params.id;
 
     try {
-      const findOneUserData: User = await this.userService.findUserById(userId);
-      res.status(200).json({ data: findOneUserData, message: 'findOne' });
+      const findOneUserData: Admin = await this.adminService.findAdminById(id);
+      res.status(200).json({ data: findOneUserData, message: '' });
     } catch (error) {
       next(error);
     }
   };
 
-  public createAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    const userData: CreateUserDto = req.body;
+  public updateAdmin = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    const userData: Admin = req.body;
 
     try {
-      const createUserData: User = await this.userService.createUser(userData);
-      res.status(201).json({ data: createUserData, message: 'created' });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  public updateAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
-    const userData: User = req.body;
-
-    try {
-      const updateUserData: User = await this.userService.updateUser(userId, userData);
-      res.status(200).json({ data: updateUserData, message: 'updated' });
+      const data: Admin = await this.adminService.updateAdmin(userId, userData);
+      res.status(200).json({ data, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -57,6 +49,18 @@ class AdminController {
     try {
       const deleteUserData: User = await this.userService.deleteUserData(userId);
       res.status(200).json({ data: deleteUserData, message: 'deleted' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public updateMember = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    const userData: CreateUserDto = req.body;
+
+    try {
+      const updateUserData: User = await this.userService.updateUser(userId, userData);
+      res.status(200).json({ data: updateUserData, message: 'updated' });
     } catch (error) {
       next(error);
     }

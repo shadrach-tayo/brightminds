@@ -10,6 +10,8 @@ import paystack from 'paystack';
 import config from '../config';
 const env = process.env.NODE_ENV || 'development';
 
+// mock imports
+// import paystackMock from '../mocks/paystack';
 class PlanService {
   public users = DB.Users;
   public plans = DB.Plan;
@@ -18,6 +20,17 @@ class PlanService {
 
   public async findAllPlans(): Promise<Plan[]> {
     const allUser: Plan[] = await this.plans.findAll();
+    return allUser;
+  }
+
+  public async getSubscribedUsers(planId: string): Promise<Subscription[]> {
+    const exists = await this.plans.findByPk(planId);
+    if (!exists) throw new HttpException(409, 'Plan does not exists');
+
+    const allUser: Subscription[] = await this.subcriptions.findAll({
+      where: { planId },
+      include: [{ model: DB.sequelize.models.Users, as: 'user' }],
+    });
     return allUser;
   }
 
@@ -45,7 +58,7 @@ class PlanService {
     // check if user has an active subscription and abort
     const currentSub: Subscription = await this.subcriptions.findOne({
       where: { userId },
-      include: [DB.sequelize.models.Plan],
+      include: [{ all: true }],
     });
 
     return currentSub;
@@ -54,7 +67,10 @@ class PlanService {
   public async getSubscriptions(): Promise<Subscription[]> {
     // check if user has an active subscription and abort
     const currentSub: Subscription[] = await this.subcriptions.findAll({
-      include: [{ model: DB.sequelize.models.Users, as: 'user', attributes: { exclude: ['password'] } }, DB.sequelize.models.Plan],
+      include: [
+        { model: DB.sequelize.models.Users, as: 'user', attributes: { exclude: ['password'] } },
+        { model: DB.sequelize.models.Plan, as: 'plan' },
+      ],
     });
 
     return currentSub;
@@ -77,6 +93,7 @@ class PlanService {
 
     // verify payment
     const res = await this.paystack.transaction.verify(subscriptionData.transaction_ref);
+    // const res = await paystackMock.transaction.verify(subscriptionData.transaction_ref);
 
     if (res.status === false) {
       throw new HttpException(401, res.message);

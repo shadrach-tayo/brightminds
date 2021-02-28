@@ -32,6 +32,13 @@ class PlansRoute implements Route {
       this.plansController.getPlanById,
     );
 
+    this.router.get(
+      `${this.path}/:id/users`,
+      authMiddleware,
+      permissionMiddleWare.grantAccess('readAny', RESOURCES.PLANS),
+      this.plansController.getSubcribedUsers,
+    );
+
     this.router.post(
       `${this.path}`,
       authMiddleware,

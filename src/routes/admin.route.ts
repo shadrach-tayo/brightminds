@@ -9,6 +9,9 @@ import permissionMiddleWare from '../common/middlewares/permission.middleware';
 import { AdminCreateSubscriptionDto } from '../dtos/subscriptions.dto';
 import validationMiddleware from '../common/middlewares/validation.middleware';
 import PlansController from '../controllers/plans.controller';
+import { CreateAdminDto, CreateUserDto } from '../dtos/users.dto';
+import AuthController from '../controllers/auth.controller';
+import AdminController from '../controllers/admin.controller';
 
 class AdminRoute implements Route {
   public path = '/admin';
@@ -16,6 +19,8 @@ class AdminRoute implements Route {
   public FILE_SIZE_LIMIT = 1 * 1024 * 1024;
   public usersController = new UsersController();
   public plansController = new PlansController();
+  public authController = new AuthController();
+  public adminController = new AdminController();
   public upload = multer({
     dest: 'temp/',
     limits: { fieldSize: this.FILE_SIZE_LIMIT },
@@ -36,6 +41,9 @@ class AdminRoute implements Route {
   private initializeRoutes() {
     // this.router.post(`${this.path}/upload-avatar`, authMiddleware, this.upload.single('avatar'), this.usersController.uploadUserAvater); // isSameUserOrCanEdit
 
+    /**
+     * Subscription and plans related routes
+     */
     this.router.post(
       `${this.path}/subscribe`,
       authMiddleware,
@@ -43,6 +51,57 @@ class AdminRoute implements Route {
       permissionMiddleWare.grantAccess('createAny', RESOURCES.SUBSCRIPTION),
       validationMiddleware(AdminCreateSubscriptionDto, 'body'),
       this.plansController.subscribeUser,
+    );
+
+    /**
+     * Member related routes
+     */
+    this.router.post(
+      `${this.path}/members`,
+      authMiddleware,
+      permissionMiddleWare.grantAccess('createAny', RESOURCES.MEMBER),
+      this.upload.none(),
+      validationMiddleware(CreateUserDto, 'body', true),
+      this.authController.signUp,
+    );
+
+    // update member profile
+    this.router.put(
+      `${this.path}/members/:id`,
+      authMiddleware,
+      permissionMiddleWare.grantAccess('updateAny', RESOURCES.MEMBER),
+      this.upload.none(),
+      validationMiddleware(CreateUserDto, 'body', true),
+      this.adminController.updateMember,
+    );
+
+    /**
+     * Admin related routes
+     */
+    this.router.get(
+      `${this.path}/:id`,
+      authMiddleware,
+      permissionMiddleWare.isSameUserOrAdmin('readAny', RESOURCES.ADMIN),
+      this.upload.none(),
+      this.adminController.getAdminById,
+    );
+
+    this.router.post(
+      `${this.path}/create`,
+      authMiddleware,
+      permissionMiddleWare.grantAccess('createAny', RESOURCES.ADMIN),
+      this.upload.none(),
+      validationMiddleware(CreateAdminDto, 'body'),
+      this.authController.createAdmin,
+    );
+
+    this.router.put(
+      `${this.path}/update/:id`,
+      authMiddleware,
+      permissionMiddleWare.isSameUserOrAdmin('updateAny', RESOURCES.ADMIN),
+      this.upload.none(),
+      validationMiddleware(CreateAdminDto, 'body', true),
+      this.adminController.updateAdmin,
     );
   }
 }

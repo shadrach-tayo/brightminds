@@ -1,15 +1,17 @@
-import bcrypt from 'bcrypt';
+import bcrypt, { hash } from 'bcrypt';
 import { CreateUserDto } from '../dtos/users.dto';
 import HttpException from '../exceptions/HttpException';
 import { User } from '../interfaces/domain.interface';
 import DB from '../../database';
-import { isEmpty } from '../utils/util';
+import { hashPassword, isEmpty } from '../utils/util';
+import { InvalidData } from '../exceptions';
 
 class UserService {
   public users = DB.Users;
+  public address = DB.Address;
 
   public async findAllUser(): Promise<User[]> {
-    const allUser: User[] = await this.users.findAll();
+    const allUser: User[] = await this.users.findAll({ include: [{ all: true }] });
     return allUser;
   }
 
@@ -34,17 +36,26 @@ class UserService {
     return createUserData;
   }
 
-  public async updateUser(userId: number, userData: User): Promise<User> {
-    if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
+  public async updateUser(userId: string, userData: CreateUserDto): Promise<User> {
+    if (isEmpty(userData)) throw new InvalidData();
 
-    const findUser: User = await this.users.findByPk(userId);
-    if (!findUser) throw new HttpException(409, "You're not user");
+    const findUser: User = await this.users.findByPk(userId, { include: [{ all: true }] });
+    if (!findUser) throw new HttpException(409, 'user not registered');
 
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-    await this.users.update({ ...userData, password: hashedPassword }, { where: { id: userId } });
+    let hashedPassword;
+    if (userData.password) {
+      hashedPassword = await hashPassword(userData.password);
+      userData.password = hashedPassword;
+    }
 
-    const updateUser: User = await this.users.findByPk(userId);
-    return updateUser;
+    await this.users.update({ ...userData }, { where: { id: userId } });
+
+    if (!isEmpty(userData.address)) {
+      await this.address.update({ ...userData.address }, { where: { id: findUser.addressId } });
+    }
+
+    const data: User = await this.users.findByPk(userId, { include: [{ all: true }] });
+    return data;
   }
 
   public async deleteUserData(userId: number): Promise<User> {

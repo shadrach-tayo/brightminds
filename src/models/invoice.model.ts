@@ -41,9 +41,9 @@ export default function invoiceFactory(sequelize: Sequelize, { UserModel, PlansM
     },
   );
 
-  InvoiceModel.belongsTo(UserModel);
-  InvoiceModel.belongsTo(PlansModel);
-  InvoiceModel.belongsTo(SubscriptionModel);
+  InvoiceModel.belongsTo(UserModel, { as: 'user' });
+  InvoiceModel.belongsTo(PlansModel, { as: 'plan' });
+  InvoiceModel.belongsTo(SubscriptionModel, { as: 'subscription' });
 
   return InvoiceModel;
 }

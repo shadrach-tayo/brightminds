@@ -1,3 +1,4 @@
+import { RESOURCES } from '../enum';
 import roles from '../roles';
 
 const grantAccess = (action, resource) => {
@@ -62,7 +63,7 @@ const grantAccess = (action, resource) => {
 //   };
 // };
 
-const isSameUserOrAdmin = (action, resource) => {
+const isSameUserOrAdmin = (action, resource: RESOURCES) => {
   return async (req, res, next) => {
     try {
       const userId = req.user.id;
