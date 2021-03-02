@@ -9,9 +9,10 @@ import { SubscriptionStatus } from '../interfaces/domain.enum';
 import paystack from 'paystack';
 import config from '../config';
 const env = process.env.NODE_ENV || 'development';
+const isProd = env !== 'development';
 
 // mock imports
-// import paystackMock from '../mocks/paystack';
+import paystackMock from '../mocks/paystack';
 class PlanService {
   public users = DB.Users;
   public plans = DB.Plan;
@@ -58,7 +59,7 @@ class PlanService {
     // check if user has an active subscription and abort
     const currentSub: Subscription = await this.subcriptions.findOne({
       where: { userId },
-      include: [{ all: true }],
+      include: [{ all: true, attributes: { exclude: ['password'] } }],
     });
 
     return currentSub;
@@ -83,7 +84,7 @@ class PlanService {
     });
 
     // if there's a active subscription return it
-    if (currentSub && compareDateFn(new Date().toISOString(), currentSub.valid_to)) {
+    if (currentSub && compareDateFn(currentSub.valid_to, new Date().toISOString())) {
       throw new HttpException(200, 'You alread have an active subscription');
       // return currentSub;
     }
@@ -92,8 +93,12 @@ class PlanService {
     const currentPlan: Plan = await this.plans.findByPk(subscriptionData.planId);
 
     // verify payment
-    const res = await this.paystack.transaction.verify(subscriptionData.transaction_ref);
-    // const res = await paystackMock.transaction.verify(subscriptionData.transaction_ref);
+    let res;
+    if (isProd) {
+      res = await this.paystack.transaction.verify(subscriptionData.transaction_ref);
+    } else {
+      res = await paystackMock.transaction.verify(subscriptionData.transaction_ref); // testing purposes
+    }
 
     if (res.status === false) {
       throw new HttpException(401, res.message);
@@ -127,7 +132,7 @@ class PlanService {
     });
 
     // if there's a active subscription return it
-    if (currentSub && compareDateFn(new Date().toISOString(), currentSub.valid_to)) {
+    if (currentSub && compareDateFn(currentSub.valid_to, new Date().toISOString())) {
       throw new HttpException(200, 'You already have an active subscription');
       // return currentSub;
     }
@@ -139,7 +144,11 @@ class PlanService {
 
     if (subscriptionData.transaction_ref) {
       // verify payment
-      res = await this.paystack.transaction.verify(subscriptionData.transaction_ref);
+      if (isProd) {
+        res = await this.paystack.transaction.verify(subscriptionData.transaction_ref);
+      } else {
+        res = await paystackMock.transaction.verify(subscriptionData.transaction_ref); // testing purposes
+      }
 
       if (res.status === false) {
         throw new HttpException(401, res.message);
@@ -162,7 +171,7 @@ class PlanService {
     }
     //  create new subscription or update current inactive sub to unpaid subscripton for user
 
-    newSub = await this.subcriptions.create({
+    newSub = await this.subcriptions.upsert({
       ...subscriptionData,
       status: SubscriptionStatus.SUCCESS,
       userId: currentUser.id,
@@ -173,6 +182,64 @@ class PlanService {
     });
 
     return newSub;
+    // create  invoice for current subscription
+  }
+
+  public async updateUserSubscription(userId: string, subscriptionData: Subscription): Promise<Subscription> {
+    // check if user has an active subscription and abort
+    const currentSub: Subscription = await this.subcriptions.findOne({
+      where: { userId: userId },
+    });
+
+    if (!currentSub) {
+      throw new HttpException(401, 'User has no subscription');
+    }
+
+    const currentUser: User = await this.users.findByPk(userId);
+    const currentPlan: Plan = await this.plans.findByPk(currentSub.planId);
+    if (!currentUser || !currentPlan) {
+      throw new HttpException(401, 'User or Plan not found');
+    }
+
+    let res, result;
+
+    if (subscriptionData.transaction_ref) {
+      // verify payment
+      if (isProd) {
+        res = await this.paystack.transaction.verify(subscriptionData.transaction_ref);
+      } else {
+        res = await paystackMock.transaction.verify(subscriptionData.transaction_ref); // testing purposes
+      }
+
+      if (res.status === false) {
+        throw new HttpException(401, res.message);
+      }
+
+      if (res.data.status === 'success') {
+        result = await this.subcriptions.update(
+          {
+            ...currentSub,
+            status: SubscriptionStatus.SUCCESS,
+            ...subscriptionData,
+          },
+          { where: { userId } },
+        );
+        return result[1];
+      } else {
+        throw new HttpException(400, 'Transaction not successful');
+      }
+    }
+
+    // update current inactive sub to unpaid subscripton for user
+    result = await this.subcriptions.update(
+      {
+        ...currentSub,
+        ...subscriptionData,
+      },
+      { where: { userId } },
+    );
+
+    return result[1];
     // create  invoice for current subscription
   }
 
@@ -192,16 +259,16 @@ class PlanService {
     return updatedPlan; // result[0] ? true : false;
   }
 
-  public async deleteUserData(userId: number): Promise<User> {
-    if (isEmpty(userId)) throw new HttpException(400, "You're not userId");
+  // public async deleteUserData(userId: number): Promise<User> {
+  //   if (isEmpty(userId)) throw new HttpException(400, "You're not userId");
 
-    const findUser: User = await this.users.findByPk(userId);
-    if (!findUser) throw new HttpException(409, "You're not user");
+  //   const findUser: User = await this.users.findByPk(userId);
+  //   if (!findUser) throw new HttpException(409, "You're not user");
 
-    await this.users.destroy({ where: { id: userId } });
+  //   await this.users.destroy({ where: { id: userId } });
 
-    return findUser;
-  }
+  //   return findUser;
+  // }
 }
 
 export default PlanService;

@@ -52,8 +52,8 @@ const AddressModel = addressFactory(sequelize);
 const TransactionModel = transactionFactory(sequelize);
 const CompetitionModel = competitionFactory(sequelize);
 const EventModel = eventFactory(sequelize, { AddressModel });
-const UserModel = userFactory(sequelize, { AddressModel });
 const PlansModel = plansFactory(sequelize);
+const UserModel = userFactory(sequelize, { AddressModel });
 const SubscriptionModel = subscriptionFactory(sequelize, { UserModel, PlansModel });
 const InvoiceModel = invoiceFactory(sequelize, { PlansModel, SubscriptionModel, UserModel });
 

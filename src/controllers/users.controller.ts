@@ -19,11 +19,11 @@ class UsersController {
   };
 
   public getUserById = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
+    const userId = req.params.id;
 
     try {
       const findOneUserData: User = await this.userService.findUserById(userId);
-      res.status(200).json({ data: findOneUserData, message: 'findOne' });
+      res.status(200).json({ data: findOneUserData, message: '' });
     } catch (error) {
       next(error);
     }
