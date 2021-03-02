@@ -55,15 +55,3 @@ export class AdminCreateSubscriptionDto implements Subscription {
   @IsString()
   planId?: string;
 }
-
-export class AdminUpdateSubscriptionDto implements Subscription {
-  @IsNumberString()
-  @IsOptional()
-  amount: string;
-
-  @IsOptional()
-  transaction_ref: string;
-
-  @IsString()
-  planId?: string;
-}

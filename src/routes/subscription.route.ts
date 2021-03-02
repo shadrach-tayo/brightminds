@@ -45,16 +45,15 @@ class SubscriptionRoute implements Route {
       this.plansController.subscribe,
     );
 
-    this.router.put(
-      `${this.path}/:id`,
-      authMiddleware,
-      this.upload.none(),
-      validationMiddleware(CreateSubscriptionDto, 'body', true),
-      permissionMiddleWare.grantAccess('updateAny', RESOURCES.SUBSCRIPTION),
-      this.plansController.updateSubscription,
-    );
+    // this.router.put(
+    //   `${this.path}/:id`,
+    //   authMiddleware,
+    //   this.upload.none(),
+    //   validationMiddleware(CreatePlanDto, 'body', true),
+    //   this.plansController.updatePlan,
+    // );
 
-    // this.router.delete(`${this.path}/:id`, authMiddleware, this.plansController.deleteSubscription);
+    this.router.delete(`${this.path}/:id`, authMiddleware, this.plansController.deleteSubscription);
   }
 }
 

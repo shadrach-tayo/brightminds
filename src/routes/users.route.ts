@@ -32,15 +32,9 @@ class UsersRoute implements Route {
 
   private initializeRoutes() {
     this.router.post(`${this.path}/upload-avatar`, authMiddleware, this.upload.single('avatar'), this.usersController.uploadUserAvater); // isSameUserOrCanEdit
-
     this.router.get(`${this.path}`, authMiddleware, permissionMiddleWare.grantAccess('readAny', RESOURCES.MEMBER), this.usersController.getUsers);
-
-    this.router.get(
-      `${this.path}/:id`,
-      authMiddleware,
-      permissionMiddleWare.isSameUserOrAdmin('readAny', RESOURCES.MEMBER),
-      this.usersController.getUserById,
-    );
+    // this.router.get(`${this.path}/:id(\\d+)`, this.usersController.getUserById);
+    // this.router.post(`${this.path}`, validationMiddleware(CreateUserDto, 'body'), this.usersController.createUser);
 
     this.router.put(
       `${this.path}/:id`,

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { AdminCreateSubscriptionDto, AdminUpdateSubscriptionDto, CreatePlanDto, CreateSubscriptionDto } from '../dtos/subscriptions.dto';
+import { AdminCreateSubscriptionDto, CreatePlanDto, CreateSubscriptionDto } from '../dtos/subscriptions.dto';
 // import { CreateUserDto } from '../dtos/users.dto';
 import { RequestWithUser } from '../interfaces/auth.interface';
 import { Plan, Subscription, User } from '../interfaces/domain.interface';
@@ -103,17 +103,6 @@ class PlansController {
   public getUserSubscriptions = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const data: Subscription[] = await this.planService.getSubscriptions();
-      res.status(201).json({ data, message: 'success' });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  public updateSubscription = async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    const userId: string = req.params.id;
-    const subData: AdminUpdateSubscriptionDto = req.body;
-    try {
-      const data: Subscription = await this.planService.updateUserSubscription(userId, subData);
       res.status(201).json({ data, message: 'success' });
     } catch (error) {
       next(error);

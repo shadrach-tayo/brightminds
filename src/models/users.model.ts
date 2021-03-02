@@ -98,9 +98,6 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
     },
   );
 
-  // UserModel.associations = {};
-
-  // UserModel.hasOne(SubscriptionModel, { foreignKey: 'user_id', sourceKey: 'id' });
   UserModel.belongsTo(AddressModel);
 
   UserModel.prototype.toJSON = function () {

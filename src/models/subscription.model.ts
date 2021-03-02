@@ -49,24 +49,10 @@ export default function subscriptionFactory(sequelize: Sequelize, { UserModel, P
         type: DataTypes.STRING(255),
         unique: true,
       },
-
-      userId: {
-        type: DataTypes.UUID,
-        unique: true,
-        allowNull: false,
-        field: 'user_id',
-        references: {
-          model: 'users',
-        },
-      },
     },
     {
       tableName: 'subscription',
       modelName: 'Subscription',
-      name: {
-        singular: 'Subscription',
-        plural: 'Subscriptions',
-      },
       sequelize,
     },
   );
