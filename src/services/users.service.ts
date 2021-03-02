@@ -5,6 +5,7 @@ import { User } from '../interfaces/domain.interface';
 import DB from '../../database';
 import { hashPassword, isEmpty } from '../utils/util';
 import { InvalidData } from '../exceptions';
+import sequelize from 'sequelize';
 
 class UserService {
   public users = DB.Users;
@@ -15,11 +16,18 @@ class UserService {
     return allUser;
   }
 
-  public async findUserById(userId: number): Promise<User> {
+  public async findUserById(userId: string): Promise<any> {
     if (isEmpty(userId)) throw new HttpException(400, "You're not userId");
+    console.log('query');
+    const query = await DB.sequelize.query('SELECT * FROM users inner join subscription on subscription.user_id = ? where users.id = ?;', {
+      replacements: [userId, userId],
+      type: sequelize.QueryTypes.SELECT,
+      model: DB.sequelize.models.Users,
+    });
 
-    const findUser: User = await this.users.findByPk(userId);
-    if (!findUser) throw new HttpException(409, "You're not user");
+    const findUser = query[0];
+
+    if (!findUser) throw new HttpException(409, 'Users not found');
 
     return findUser;
   }
