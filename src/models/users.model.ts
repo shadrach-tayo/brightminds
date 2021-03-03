@@ -21,6 +21,7 @@ export class UserModel extends Model<User, UserCreationAttributes> implements Us
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+  public readonly deletedAt!: Date;
 }
 
 export default function userFactory(sequelize: Sequelize, { AddressModel }): typeof UserModel {
@@ -85,6 +86,7 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
       },
     },
     {
+      paranoid: true,
       hooks: {
         beforeCreate: (user, {}) => {
           return hashPassword(user.password).then((hashedPassword: string) => {
@@ -108,6 +110,8 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
     delete values.password;
     return values;
   };
+
+  UserModel.sync({ alter: true });
 
   return UserModel;
 }

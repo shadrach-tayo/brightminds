@@ -11,7 +11,7 @@ class UsersController {
 
   public getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllUsersData: User[] = await this.userService.findAllUser();
+      const findAllUsersData: User[] = await this.userService.findAllUser(req.query);
       res.status(200).json({ data: findAllUsersData, message: 'findAll' });
     } catch (error) {
       next(error);
@@ -67,11 +67,11 @@ class UsersController {
   };
 
   public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
+    const userId = req.params.id;
 
     try {
       const deleteUserData: User = await this.userService.deleteUserData(userId);
-      res.status(200).json({ data: deleteUserData, message: 'deleted' });
+      res.status(200).json({ data: deleteUserData, message: 'user deleted' });
     } catch (error) {
       next(error);
     }

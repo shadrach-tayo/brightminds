@@ -50,7 +50,12 @@ class UsersRoute implements Route {
       this.usersController.updateUser,
     );
 
-    // this.router.delete(`${this.path}/:id(\\d+)`, this.usersController.deleteUser);
+    this.router.delete(
+      `${this.path}/:id`,
+      authMiddleware,
+      permissionMiddleWare.isSameUserOrAdmin('deleteAny', RESOURCES.MEMBER),
+      this.usersController.deleteUser,
+    );
   }
 }
 

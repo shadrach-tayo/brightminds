@@ -6,19 +6,36 @@ import DB from '../../database';
 import { hashPassword, isEmpty } from '../utils/util';
 import { InvalidData } from '../exceptions';
 import sequelize from 'sequelize';
+import { Op } from 'sequelize';
 
 class UserService {
   public users = DB.Users;
   public address = DB.Address;
 
-  public async findAllUser(): Promise<User[]> {
-    const allUser: User[] = await this.users.findAll({ include: [{ all: true }] });
+  public async findAllUser(params: any): Promise<User[]> {
+    const filterArr: any[] = Object.keys(params)
+      .filter(key => !!params[key])
+      .map(key => ({ [key]: { [Op.regexp]: params[key] } }));
+
+    const filter = {
+      [Op.or]: filterArr,
+    };
+
+    console.log('params ', params);
+    console.log('filter ', filter);
+
+    let allUser: User[];
+    if (filterArr.length > 0) {
+      allUser = await this.users.findAll({ where: filter, include: [{ all: true }] });
+    } else {
+      allUser = await this.users.findAll({ include: [{ all: true }] });
+    }
     return allUser;
   }
 
   public async findUserById(userId: string): Promise<any> {
     if (isEmpty(userId)) throw new HttpException(400, "You're not userId");
-    console.log('query');
+
     const query = await DB.sequelize.query('SELECT * FROM users inner join subscription on subscription.user_id = ? where users.id = ?;', {
       replacements: [userId, userId],
       type: sequelize.QueryTypes.SELECT,
@@ -66,11 +83,11 @@ class UserService {
     return data;
   }
 
-  public async deleteUserData(userId: number): Promise<User> {
-    if (isEmpty(userId)) throw new HttpException(400, "You're not userId");
+  public async deleteUserData(userId: string): Promise<User> {
+    if (isEmpty(userId)) throw new HttpException(400, 'User Id cannot be empty');
 
     const findUser: User = await this.users.findByPk(userId);
-    if (!findUser) throw new HttpException(409, "You're not user");
+    if (!findUser) throw new HttpException(409, 'User not registered');
 
     await this.users.destroy({ where: { id: userId } });
 
