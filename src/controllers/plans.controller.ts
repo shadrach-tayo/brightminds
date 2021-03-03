@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AdminCreateSubscriptionDto, AdminUpdateSubscriptionDto, CreatePlanDto, CreateSubscriptionDto } from '../dtos/subscriptions.dto';
 // import { CreateUserDto } from '../dtos/users.dto';
 import { RequestWithUser } from '../interfaces/auth.interface';
-import { Plan, Subscription, User } from '../interfaces/domain.interface';
+import { Plan, Subscription } from '../interfaces/domain.interface';
 import PlanService from '../services/plans.service';
 import UploadService from '../services/upload.service';
 import UserService from '../services/users.service';
@@ -146,27 +146,27 @@ class PlansController {
   //   }
   // };
 
-  public deletePlan = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
+  // public deletePlan = async (req: Request, res: Response, next: NextFunction) => {
+  //   const userId = Number(req.params.id);
 
-    try {
-      const deleteUserData: User = await this.userService.deleteUserData(userId);
-      res.status(200).json({ data: deleteUserData, message: 'deleted' });
-    } catch (error) {
-      next(error);
-    }
-  };
+  //   try {
+  //     const deleteUserData: User = await this.userService.deleteUserData(userId);
+  //     res.status(200).json({ data: deleteUserData, message: 'deleted' });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // };
 
-  public deleteSubscription = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
+  // public deleteSubscription = async (req: Request, res: Response, next: NextFunction) => {
+  //   const userId = Number(req.params.id);
 
-    try {
-      const deleteUserData: User = await this.userService.deleteUserData(userId);
-      res.status(200).json({ data: deleteUserData, message: 'deleted' });
-    } catch (error) {
-      next(error);
-    }
-  };
+  //   try {
+  //     const deleteUserData: User = await this.userService.deleteUserData(userId);
+  //     res.status(200).json({ data: deleteUserData, message: 'deleted' });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // };
 }
 
 export default PlansController;

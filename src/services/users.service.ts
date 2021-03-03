@@ -12,7 +12,7 @@ class UserService {
   public users = DB.Users;
   public address = DB.Address;
 
-  public async findAllUser(params: any): Promise<User[]> {
+  public async findAllUser(params: any = {}): Promise<User[]> {
     const filterArr: any[] = Object.keys(params)
       .filter(key => !!params[key])
       .map(key => ({ [key]: { [Op.regexp]: params[key] } }));

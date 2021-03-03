@@ -12,8 +12,9 @@ class AdminController {
   public uploadService = new UploadService();
 
   public getAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
     try {
-      const findAllUsersData: User[] = await this.userService.findAllUser();
+      const findAllUsersData: Admin = await this.adminService.findAdminById(userId);
       res.status(200).json({ data: findAllUsersData, message: 'findAll' });
     } catch (error) {
       next(error);
@@ -44,7 +45,7 @@ class AdminController {
   };
 
   public deleteAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    const userId = Number(req.params.id);
+    const userId = req.params.id;
 
     try {
       const deleteUserData: User = await this.userService.deleteUserData(userId);

@@ -55,7 +55,7 @@ class PlansRoute implements Route {
       this.plansController.updatePlan,
     );
 
-    this.router.delete(`${this.path}/:id`, authMiddleware, this.plansController.deletePlan);
+    // this.router.delete(`${this.path}/:id`, authMiddleware, this.plansController.deletePlan);
   }
 }
 
