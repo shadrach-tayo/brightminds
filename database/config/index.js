@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env.production') });
+if (process.env.NODE_ENV === 'production'){
+  require('dotenv').config({ path: path.resolve(__dirname, '../../.env.production') });
+}else if(process.env.NODE_ENV == 'development' || process.env.NODE_ENV == undefined){
+  require('dotenv').config();
+}
+
+
 
 const dbConfig = {
   development: {
-    username: 'root',
-    password: 'password',
-    database: 'brightminds',
-    host: '127.0.0.1',
+    username: process.env.MYSQL_USER || 'root',
+    password: process.env.MYSQL_PASSWORD || 'password',
+    database: process.env.MYSQL_DATABASE || 'brightminds',
+    host: process.env.MYSQL_HOST || '127.0.0.1',
     logging: true,
     dialect: 'mysql',
   },

@@ -1,9 +1,9 @@
 const dbConfig = {
   development: {
-    username: 'root',
-    password: 'password',
-    database: 'brightminds',
-    host: process.env.MYSQL_HOST,
+    username: process.env.MYSQL_USER || 'root',
+    password: process.env.MYSQL_PASSWORD || 'password',
+    database: process.env.MYSQL_DATABASE || 'brightminds',
+    host: process.env.MYSQL_HOST || '127.0.0.1',
     port: 3306,
     dialect: 'mysql',
     PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
