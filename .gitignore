@@ -7,6 +7,7 @@
 .env
 .aws-secret
 .env.production
+.env.development
 new_user_credentials.csv
 brightminds.pem
 brightminds2.pem
