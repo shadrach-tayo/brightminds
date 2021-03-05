@@ -13,22 +13,67 @@ class UserService {
   public address = DB.Address;
 
   public async findAllUser(params: any = {}): Promise<User[]> {
+    const searchFields = ['firstname', 'lastname', 'username', 'email', 'school'];
+    const addressFields = ['lga', 'state'];
+    const exactFields = ['gender'];
+    // const dateFields = ['startDate', 'endDate'];
+
+    const searchText: string = params.search;
+    delete params.search;
+
+    // build address filter
+    let addressFilter = {};
+    const addressFilterArr = [];
+    if (params[addressFields[0]] || params[addressFields[1]]) {
+      addressFields.forEach(key => {
+        params[key] && addressFilterArr.push({ [key]: { [Op.startsWith]: `${params[key]}` } });
+        // params[key] && (addressFilter[key] = { [Op.startsWith]: `${params[key]}` });
+        delete params[key];
+      });
+
+      addressFilter = {
+        [Op.and]: addressFilterArr,
+      };
+    }
+
+    // construct date options
+    // const dateOptionsArr = [];
+
     const filterArr: any[] = Object.keys(params)
       .filter(key => !!params[key])
-      .map(key => ({ [key]: { [Op.regexp]: params[key] } }));
+      .map(key => {
+        // if (dateFields.includes(key)) {
+
+        // };
+
+        if (exactFields.includes(key)) {
+          // make query more strict for columns like gender
+          return { [key]: { [Op.startsWith]: `${params[key]}` } };
+        }
+        return { [key]: { [Op.regexp]: params[key] } };
+      });
+
+    // add random search for other fields to filter if included in params
+    if (searchText) {
+      searchFields.forEach(value => {
+        filterArr.push({ [value]: { [Op.like]: `%${searchText}` } });
+      });
+    }
 
     const filter = {
       [Op.or]: filterArr,
     };
 
-    console.log('params ', params);
-    console.log('filter ', filter);
-
     let allUser: User[];
+
     if (filterArr.length > 0) {
-      allUser = await this.users.findAll({ where: filter, include: [{ all: true }] });
+      allUser = await this.users.findAll({
+        where: filter,
+        attributes: { exclude: ['addressId'] },
+        include: [{ model: DB.sequelize.models.Address, where: addressFilter, required: true }],
+      });
     } else {
-      allUser = await this.users.findAll({ include: [{ all: true }] });
+      allUser = await this.users.findAll({ attributes: { exclude: ['addressId'] }, include: [{ all: true }] });
     }
     return allUser;
   }
@@ -36,7 +81,7 @@ class UserService {
   public async findUserById(userId: string): Promise<any> {
     if (isEmpty(userId)) throw new HttpException(400, "You're not userId");
 
-    const query = await DB.sequelize.query('SELECT * FROM users inner join subscription on subscription.user_id = ? where users.id = ?;', {
+    const query = await DB.sequelize.query('SELECT * FROM users left join subscription on subscription.user_id = ? where users.id = ?;', {
       replacements: [userId, userId],
       type: sequelize.QueryTypes.SELECT,
       model: DB.sequelize.models.Users,
@@ -44,7 +89,7 @@ class UserService {
 
     const findUser = query[0];
 
-    if (!findUser) throw new HttpException(409, 'Users not found');
+    if (!findUser) throw new HttpException(409, 'User not found');
 
     return findUser;
   }

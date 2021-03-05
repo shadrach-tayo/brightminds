@@ -51,7 +51,7 @@ export default function addressFactory(sequelize: Sequelize): typeof AddressMode
   );
 
   // AddressModel.belongsTo(AddressModel, { as: 'address' });
-  AddressModel.sync({ force: true });
+  AddressModel.sync({ alter: true });
 
   return AddressModel;
 }

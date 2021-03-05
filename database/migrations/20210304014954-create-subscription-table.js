@@ -2,47 +2,70 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const DataTypes = Sequelize;
-    await queryInterface.createTable('subscription', {
-      id: {
-        primaryKey: true,
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-      },
+    await queryInterface.createTable(
+      'subscription',
+      {
+        id: {
+          primaryKey: true,
+          type: Sequelize.UUID,
+          defaultValue: Sequelize.UUIDV4,
+        },
 
-      status: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1,
-      },
+        status: {
+          type: Sequelize.INTEGER,
+          defaultValue: 1,
+        },
 
-      amount: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-      },
+        amount: {
+          type: Sequelize.INTEGER,
+          defaultValue: 0,
+        },
 
-      valid_from: DataTypes.DATE,
+        valid_from: Sequelize.DATE,
 
-      valid_to: DataTypes.DATE,
+        valid_to: Sequelize.DATE,
 
-      date_subscribed: DataTypes.DATE,
+        date_subscribed: Sequelize.DATE,
 
-      date_unsubscribed: DataTypes.DATE,
+        date_unsubscribed: Sequelize.DATE,
 
-      transaction_ref: {
-        type: DataTypes.STRING(255),
-        unique: true,
-      },
+        transaction_ref: {
+          type: Sequelize.STRING(255),
+          unique: true,
+        },
 
-      userId: {
-        type: DataTypes.UUID,
-        unique: true,
-        allowNull: false,
-        field: 'user_id',
-        references: {
-          model: 'users',
+        created_at: {
+          type: Sequelize.DATE,
+        },
+
+        updated_at: {
+          type: Sequelize.DATE,
+        },
+
+        userId: {
+          type: Sequelize.UUID,
+          unique: true,
+          allowNull: false,
+          field: 'user_id',
+          references: {
+            model: 'users',
+            key: 'id',
+          },
+        },
+        planId: {
+          type: Sequelize.UUID,
+          field: 'plan_id',
+          allowNull: false,
+          references: {
+            model: 'plan',
+            key: 'id',
+          },
         },
       },
-    });
+      {
+        timestamps: true,
+      },
+    );
   },
 
   down: async (queryInterface, Sequelize) => {

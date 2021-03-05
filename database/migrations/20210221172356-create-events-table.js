@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable(
-      'admins',
+      'events',
       {
         id: {
           primaryKey: true,
@@ -12,36 +12,39 @@ module.exports = {
           defaultValue: Sequelize.UUIDV4,
         },
 
-        email: {
+        title: {
           allowNull: false,
           type: Sequelize.STRING(45),
         },
 
-        password: {
+        description: {
           allowNull: false,
           type: Sequelize.STRING(255),
         },
 
-        firstname: {
+        image_url: {
           allowNull: false,
-          type: Sequelize.STRING(45),
+          type: Sequelize.STRING(255),
         },
 
-        lastname: {
+        startDate: {
           allowNull: false,
-          type: Sequelize.STRING(45),
+          type: Sequelize.DATE,
         },
 
-        role: {
+        endDate: {
           allowNull: false,
-          type: Sequelize.STRING(45),
+          type: Sequelize.DATE,
         },
 
-        avatar_url: Sequelize.STRING(255),
-
-        phone_number: {
-          allowNull: false,
-          type: Sequelize.STRING(14),
+        addressId: {
+          type: Sequelize.UUID,
+          unique: true,
+          field: 'address_id',
+          references: {
+            model: 'address',
+            key: 'id',
+          },
         },
 
         created_at: {
@@ -54,8 +57,8 @@ module.exports = {
       },
       {
         timestamps: true,
-        tableName: 'admins',
-        modelName: 'Admins',
+        tableName: 'events',
+        modelName: 'Events',
       },
     );
   },
@@ -66,6 +69,6 @@ module.exports = {
      *
      * Example:
      */
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('events');
   },
 };

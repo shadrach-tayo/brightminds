@@ -69,7 +69,7 @@ class PlanService {
     // check if user has an active subscription and abort
     const currentSub: Subscription[] = await this.subcriptions.findAll({
       include: [
-        { model: DB.sequelize.models.Users, as: 'user', attributes: { exclude: ['password'] } },
+        { model: DB.sequelize.models.Users, as: 'user', attributes: { exclude: ['password'] }, required: true },
         { model: DB.sequelize.models.Plan, as: 'plan' },
       ],
     });

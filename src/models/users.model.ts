@@ -111,7 +111,7 @@ export default function userFactory(sequelize: Sequelize, { AddressModel }): typ
     return values;
   };
 
-  UserModel.sync({ alter: true });
+  // UserModel.sync({ alter: true });
 
   return UserModel;
 }
