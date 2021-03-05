@@ -50,13 +50,13 @@ class UserService {
           // make query more strict for columns like gender
           return { [key]: { [Op.startsWith]: `${params[key]}` } };
         }
-        return { [key]: { [Op.regexp]: params[key] } };
+        return { [key]: { [Op.iLike]: `%${params[key]}` } };
       });
 
     // add random search for other fields to filter if included in params
     if (searchText) {
       searchFields.forEach(value => {
-        filterArr.push({ [value]: { [Op.like]: `%${searchText}` } });
+        filterArr.push({ [value]: { [Op.substring]: searchText } });
       });
     }
 
@@ -81,11 +81,14 @@ class UserService {
   public async findUserById(userId: string): Promise<any> {
     if (isEmpty(userId)) throw new HttpException(400, "You're not userId");
 
-    const query = await DB.sequelize.query('SELECT * FROM users left join subscription on subscription.user_id = ? where users.id = ?;', {
-      replacements: [userId, userId],
-      type: sequelize.QueryTypes.SELECT,
-      model: DB.sequelize.models.Users,
-    });
+    const query = await DB.sequelize.query(
+      'SELECT * FROM users inner join address on users.address_id = address.id left join subscription on subscription.user_id = ? where users.id = ?;',
+      {
+        replacements: [userId, userId],
+        type: sequelize.QueryTypes.SELECT,
+        model: DB.sequelize.models.Users,
+      },
+    );
 
     const findUser = query[0];
 
