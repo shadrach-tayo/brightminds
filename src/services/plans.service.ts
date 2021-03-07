@@ -78,6 +78,10 @@ class PlanService {
   }
 
   public async subscribe(userId: string, subscriptionData: Subscription): Promise<Subscription> {
+    /**
+     * TODO: CATER FOR FREE PLANS
+     */
+
     // check if user has an active subscription and abort
     const currentSub: Subscription = await this.subcriptions.findOne({
       where: { [Op.or]: [{ userId: userId }, { transaction_ref: subscriptionData.transaction_ref }] },

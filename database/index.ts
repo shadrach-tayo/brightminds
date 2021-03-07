@@ -11,6 +11,7 @@ import competitionFactory from '../src/models/competition.model';
 import plansFactory from '../src/models/plans.model';
 import subscriptionFactory from '../src/models/subscription.model';
 import invoiceFactory from '../src/models/invoice.model';
+import TicketFactory from '../src/models/tickets.model';
 const env = process.env.NODE_ENV || 'development';
 console.log(config[env].database, config[env].username, config[env].password, config[env].host, config[env].port);
 const sequelize = new Sequelize.Sequelize(config[env].database, config[env].username, config[env].password, {
@@ -56,6 +57,7 @@ const PlansModel = plansFactory(sequelize);
 const UserModel = userFactory(sequelize, { AddressModel });
 const SubscriptionModel = subscriptionFactory(sequelize, { UserModel, PlansModel });
 const InvoiceModel = invoiceFactory(sequelize, { PlansModel, SubscriptionModel, UserModel });
+const TicketModel = TicketFactory(sequelize, { UserModel, EventModel });
 
 const DB = {
   Users: UserModel,
@@ -67,6 +69,7 @@ const DB = {
   Plan: PlansModel,
   Subscriptions: SubscriptionModel,
   Invoice: InvoiceModel,
+  Tickets: TicketModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };

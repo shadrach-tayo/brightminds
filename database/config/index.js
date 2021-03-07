@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-if (process.env.NODE_ENV === 'production') {
-  require('dotenv').config({ path: path.resolve(__dirname, '../../.env.production') });
-} else if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == undefined) {
-  require('dotenv').config();
-}
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env.production') });
 
 const dbConfig = {
   development: {

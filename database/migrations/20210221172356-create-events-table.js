@@ -23,23 +23,21 @@ module.exports = {
         },
 
         image_url: {
-          allowNull: false,
           type: Sequelize.STRING(255),
         },
 
-        startDate: {
+        start_date: {
           allowNull: false,
           type: Sequelize.DATE,
         },
 
-        endDate: {
+        start_date: {
           allowNull: false,
           type: Sequelize.DATE,
         },
 
         addressId: {
           type: Sequelize.UUID,
-          unique: true,
           field: 'address_id',
           references: {
             model: 'address',

@@ -1,18 +1,17 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 import { Event } from '../interfaces/domain.interface';
 
-export type EventCreationAttributes = Optional<Event, 'transactionId' | 'chargeId'>;
+export type EventCreationAttributes = Optional<Event, 'addressId'>;
 
 export class EventModel extends Model<Event, EventCreationAttributes> implements Event {
   public id: string;
   public title: string;
   public description: string;
   public image_url: string;
-  public startDate: string;
-  public endDate: string;
-  public transactionId: string;
-  public chargeId?: string;
-  public addressId: string;
+  public start_date: string;
+  public end_date: string;
+  public entry_fee?: string;
+  public locationId: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -33,22 +32,18 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel }): ty
         type: DataTypes.STRING(45),
       },
 
-      description: {
-        allowNull: false,
-        type: DataTypes.STRING(255),
-      },
+      description: DataTypes.STRING(255),
 
-      image_url: {
-        allowNull: false,
-        type: DataTypes.STRING(255),
-      },
+      entry_fee: DataTypes.STRING(45),
 
-      startDate: {
+      image_url: DataTypes.STRING(255),
+
+      start_date: {
         allowNull: false,
         type: DataTypes.DATE,
       },
 
-      endDate: {
+      end_date: {
         allowNull: false,
         type: DataTypes.DATE,
       },
@@ -61,8 +56,7 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel }): ty
   );
 
   EventModel.belongsTo(AddressModel);
-  // EventModel.belongsTo(AddressModel, { as: 'charge' }); // link to charge
-  // EventModel.belongsTo(TransactionModel); // transaction
+  EventModel.sync({ alter: true });
 
   return EventModel;
 }

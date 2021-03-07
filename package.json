@@ -19,6 +19,7 @@
     "db:migrate": "sequelize db:migrate --env development --config ./database/config/index.js",
     "db:migrate:all": "sequelize db:migrate:all --env development --config ./database/config/index.js",
     "db:migrate:prod": "sequelize db:migrate --env production --config ./database/config/index.js",
+    "db:migrate:prod:undo": "sequelize db:migrate:undo --env production --config ./database/config/index.js",
     "db:migrate:all:prod": "sequelize db:migrate:all --env production --config ./database/config/index.js",
     "build": "tsc",
     "test": "jest --forceExit --detectOpenHandles",

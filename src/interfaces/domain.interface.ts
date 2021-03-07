@@ -47,13 +47,13 @@ export interface Charge extends BaseDomain {
 
 export interface Event extends BaseDomain {
   title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  image_url: string;
+  description?: string;
+  start_date: string;
+  end_date: string;
+  image_url?: string;
   addressId?: string;
-  chargeId?: string;
-  transactionId?: string;
+  address?: Record<string, any>;
+  entry_fee?: string;
 }
 
 export interface Competition extends BaseDomain {
@@ -76,11 +76,13 @@ export interface Transaction extends BaseDomain {
 }
 
 export interface Ticket extends BaseDomain {
-  event: string;
+  event?: Event;
+  eventId?: string;
+  userId?: string;
+  user?: User;
   quantity: number;
-  fee: Charge;
-  total_price: number;
-  transaction: string;
+  amount_paid: string;
+  transaction_ref: string;
 }
 
 export interface Plan extends BaseDomain {

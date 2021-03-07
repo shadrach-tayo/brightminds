@@ -1,13 +1,15 @@
 import HttpException from '../exceptions/HttpException';
-import { User } from '../interfaces/domain.interface';
+import { User, Event } from '../interfaces/domain.interface';
 import DB from '../../database';
 import aws from 'aws-sdk';
 import fs from 'fs';
 import { logger } from '../utils/logger';
 class UploadService {
   public users = DB.Users;
+  public events = DB.Events;
   public s3 = new aws.S3();
   private USER_AVATAR_KEY = 'userAvatar';
+  private EVENT_BANNER_KEY = 'events';
 
   public async uploadUserAvatar({ userId, avatarFile }): Promise<User> {
     const findUser: User = await this.users.findByPk(userId);
@@ -40,6 +42,41 @@ class UploadService {
       .catch(err => {
         logger.error(err.message, err.code);
         throw new HttpException(500, "You can't upload user avatar for now, we are working to fix it");
+      });
+    return result;
+  }
+
+  public async uploadEventBanner({ eventId, avatarFile }): Promise<Event> {
+    const findEvent: Event = await this.events.findByPk(eventId);
+    if (!findEvent) throw new HttpException(409, 'Event is not registered');
+
+    const arr = avatarFile.originalname.split('.');
+    const fileExt = arr[arr.length - 1];
+    const params = {
+      ACL: 'public-read',
+      Bucket: process.env.BUCKET_NAME,
+      Body: fs.createReadStream(avatarFile.path),
+      Key: `${this.EVENT_BANNER_KEY}/${eventId}.${fileExt}`,
+    };
+
+    const result = await this.s3
+      .upload(params)
+      .promise()
+      .then(async data => {
+        if (data) {
+          fs.unlinkSync(process.cwd() + '/' + avatarFile.path); // Empty temp folder
+          const locationUrl = data.Location;
+
+          await this.events.update({ image_url: locationUrl }, { where: { id: eventId } });
+          const updatedEvent: Event = await this.events.findByPk(eventId, { attributes: ['image_url'] });
+          return updatedEvent;
+        } else {
+          throw new HttpException(409, 'We could not upload you event banner now, try again later');
+        }
+      })
+      .catch(err => {
+        logger.error(err.message, err.code);
+        throw new HttpException(500, "You can't upload event banner for now, we are working to fix it");
       });
     return result;
   }
