@@ -7,7 +7,7 @@ import permissionMiddleWare from '../common/middlewares/permission.middleware';
 import { RESOURCES } from '../common/enum';
 import validationMiddleware from '../common/middlewares/validation.middleware';
 import EventsController from '../controllers/events.controller';
-import { CreateEventDto } from '../dtos/resources.dto';
+import { CreateEventDto, CreateTicketDto } from '../dtos/resources.dto';
 class EventsRoute implements Route {
   public path = '/events';
   public router = Router();
@@ -52,6 +52,7 @@ class EventsRoute implements Route {
       this.upload.none(),
       authMiddleware,
       permissionMiddleWare.grantAccess('createOwn', RESOURCES.EVENTS),
+      validationMiddleware(CreateTicketDto, 'body'),
       this.eventsController.registerEvent,
     );
 

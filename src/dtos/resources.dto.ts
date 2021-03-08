@@ -44,13 +44,14 @@ export class CreateTicketDto {
   @IsNumberString()
   amount_paid: string;
 
-  @IsNumber()
+  @IsNumberString()
   quantity: number;
 
   @IsString()
   transaction_ref: string;
 
   @IsString()
+  @IsOptional()
   userId: string;
 
   @IsString()

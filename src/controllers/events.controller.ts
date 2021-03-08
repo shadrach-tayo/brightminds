@@ -13,7 +13,7 @@ class EventsController {
 
   public getEvents = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllUsersData: Event[] = await this.eventService.findAllEvents(req.query);
+      const findAllUsersData: Event[] = await this.eventService.findAllEvents();
       res.status(200).json({ data: findAllUsersData, message: '' });
     } catch (error) {
       next(error);
