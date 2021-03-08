@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateEventDto, CreateTicketDto } from '../dtos/resources.dto';
-import { CreateUserDto } from '../dtos/users.dto';
 import { RequestWithFile, RequestWithUser } from '../interfaces/auth.interface';
-import { User, Event, Ticket } from '../interfaces/domain.interface';
+import { Event, Ticket } from '../interfaces/domain.interface';
 import EventService from '../services/events.service';
 import UploadService from '../services/upload.service';
 import UserService from '../services/users.service';

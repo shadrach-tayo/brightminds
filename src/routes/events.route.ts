@@ -6,7 +6,6 @@ import HttpException from '../exceptions/HttpException';
 import permissionMiddleWare from '../common/middlewares/permission.middleware';
 import { RESOURCES } from '../common/enum';
 import validationMiddleware from '../common/middlewares/validation.middleware';
-import { CreateUserDto } from '../dtos/users.dto';
 import EventsController from '../controllers/events.controller';
 import { CreateEventDto } from '../dtos/resources.dto';
 class EventsRoute implements Route {
@@ -80,7 +79,7 @@ class EventsRoute implements Route {
       this.eventsController.getEventRegistrations,
     );
 
-    this.router.get(`${this.path}`, authMiddleware, permissionMiddleWare.grantAccess('readAny', RESOURCES.EVENTS), this.eventsController.getEvents);
+    this.router.get(`${this.path}`, authMiddleware, permissionMiddleWare.grantAccess('readOwn', RESOURCES.EVENTS), this.eventsController.getEvents);
 
     this.router.get(
       `${this.path}/:id`,

@@ -21,7 +21,7 @@ class EventService {
   public tickets = DB.Tickets;
   public paystack = paystack(config[env].PAYSTACK_SECRET_KEY);
 
-  public async findAllEvents(params: any = {}): Promise<Event[]> {
+  public async findAllEvents(): Promise<Event[]> {
     const allEvents: Event[] = await this.events.findAll({ attributes: { exclude: ['addressId'] }, include: [{ all: true }] });
     return allEvents;
   }
