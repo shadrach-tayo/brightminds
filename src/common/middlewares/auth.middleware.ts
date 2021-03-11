@@ -15,7 +15,6 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
       const userId = verificationResponse.id;
       const findUser = await DB.Users.findByPk(userId);
       const findAdmin = await DB.Admins.findByPk(userId);
-
       if (findUser || findAdmin) {
         req.user = findUser || findAdmin;
         next();

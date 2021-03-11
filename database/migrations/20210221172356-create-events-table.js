@@ -22,9 +22,7 @@ module.exports = {
           type: Sequelize.STRING(255),
         },
 
-        entry_fee: Sequelize.STRING(45),
-
-        image_url: {
+        banner: {
           type: Sequelize.STRING(255),
         },
 
@@ -36,6 +34,10 @@ module.exports = {
         end_date: {
           allowNull: false,
           type: Sequelize.DATE,
+        },
+
+        event_time: {
+          type: Sequelize.TIME,
         },
 
         addressId: {

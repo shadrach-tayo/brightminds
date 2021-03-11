@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmptyObject, IsNumberString, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsDateString, IsNotEmpty, IsNotEmptyObject, IsNumberString, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
 import { Address, Event } from '../interfaces/domain.interface';
 
 export class CreateAddressDto implements Address {
@@ -32,12 +32,19 @@ export class CreateEventDto implements Event {
   @IsDateString({ strict: true })
   public end_date: string;
 
+  public banner: any;
+
+  @IsDateString()
+  @IsOptional()
+  public event_time: string;
+
   @IsObject({ message: 'Address is required' })
   @IsNotEmptyObject()
   public address!: CreateAddressDto;
 
-  @IsNumberString()
-  public entry_fee?: string;
+  @IsArray()
+  @IsNotEmptyObject()
+  public membership_types: string[];
 }
 
 export class CreateTicketDto {

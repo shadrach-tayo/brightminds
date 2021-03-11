@@ -10,8 +10,7 @@ export class EventModel extends Model<Event, EventCreationAttributes> implements
   public image_url: string;
   public start_date: string;
   public end_date: string;
-  public entry_fee?: string;
-  public locationId: string;
+  public event_time: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -34,9 +33,7 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel }): ty
 
       description: DataTypes.STRING(255),
 
-      entry_fee: DataTypes.STRING(45),
-
-      image_url: DataTypes.STRING(255),
+      banner: DataTypes.STRING(255),
 
       start_date: {
         allowNull: false,
@@ -45,6 +42,10 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel }): ty
 
       end_date: {
         allowNull: false,
+        type: DataTypes.DATE,
+      },
+
+      event_time: {
         type: DataTypes.DATE,
       },
     },
@@ -57,6 +58,5 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel }): ty
 
   EventModel.belongsTo(AddressModel);
   EventModel.sync({ alter: true });
-
   return EventModel;
 }

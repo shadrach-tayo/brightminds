@@ -35,7 +35,7 @@ class EventsRoute implements Route {
       `${this.path}/upload-image/:id`,
       authMiddleware,
       permissionMiddleWare.grantAccess('updateAny', RESOURCES.EVENTS),
-      this.upload.single('image'),
+      this.upload.single('banner'),
       this.eventsController.uploadEventBannner,
     );
 

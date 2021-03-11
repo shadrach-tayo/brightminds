@@ -67,8 +67,8 @@ class UploadService {
           fs.unlinkSync(process.cwd() + '/' + avatarFile.path); // Empty temp folder
           const locationUrl = data.Location;
 
-          await this.events.update({ image_url: locationUrl }, { where: { id: eventId } });
-          const updatedEvent: Event = await this.events.findByPk(eventId, { attributes: ['image_url'] });
+          await this.events.update({ banner: locationUrl }, { where: { id: eventId } });
+          const updatedEvent: Event = await this.events.findByPk(eventId, { attributes: ['banner'] });
           return updatedEvent;
         } else {
           throw new HttpException(409, 'We could not upload you event banner now, try again later');

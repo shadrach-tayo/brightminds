@@ -50,10 +50,10 @@ export interface Event extends BaseDomain {
   description?: string;
   start_date: string;
   end_date: string;
-  image_url?: string;
+  event_time: string;
+  banner?: string;
   addressId?: string;
   address?: Record<string, any>;
-  entry_fee?: string;
 }
 
 export interface Competition extends BaseDomain {

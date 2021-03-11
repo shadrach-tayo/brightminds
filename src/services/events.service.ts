@@ -9,16 +9,20 @@ import config from '../config';
 import paystack from 'paystack';
 
 const env = process.env.NODE_ENV || 'development';
-const isProd = env !== 'development';
+// const isProd = env !== 'development';
 
 // mock imports
-import paystackMock from '../mocks/paystack';
+// import paystackMock from '../mocks/paystack';
 
 class EventService {
   public users = DB.Users;
   public address = DB.Address;
   public events = DB.Events;
   public tickets = DB.Tickets;
+  public plans = DB.Plan;
+  public eventsPlan = DB.EventsPlan;
+  public subscriptions = DB.Subscriptions;
+
   public paystack = paystack(config[env].PAYSTACK_SECRET_KEY);
 
   public async findAllEvents(): Promise<Event[]> {
@@ -37,12 +41,26 @@ class EventService {
   }
 
   public async createEvent(data: CreateEventDto): Promise<Event> {
-    if (isEmpty(data)) throw new HttpException(400, "You're not data");
+    if (isEmpty(data)) throw new InvalidData();
 
-    if (!data.address) throw new HttpException(400, 'Invalid Address data');
+    if (!data.address) throw new HttpException(409, 'Invalid Address data');
+
+    if (!data.membership_types || data.membership_types.length === 0) throw new HttpException(409, 'Membership types cannot be empty');
+
     const eventAddress: Address = await this.address.create(data.address);
 
     const createEvent: Event = await this.events.create({ ...data, addressId: eventAddress.id }, { include: DB.sequelize.models.Address });
+
+    for (const planId of data.membership_types) {
+      const checkPlan = await this.plans.findOne({ where: { id: planId } });
+
+      if (!checkPlan) throw new HttpException(409, `Membership plan ${planId} doesn't exits`);
+
+      const event_plan = await this.eventsPlan.findOne({ where: { eventId: createEvent.id, planId } });
+      if (event_plan) continue;
+
+      await this.eventsPlan.create({ eventId: createEvent.id, planId });
+    }
 
     return createEvent;
   }
@@ -75,65 +93,52 @@ class EventService {
   }
 
   public async register(userId: string, ticketData: Ticket): Promise<Ticket> {
-    /**
-     * TODO: CATER FOR FREE EVENTS
-     */
-
     // check if user has an active Ticket and abort
-    const currentSub: Ticket = await this.tickets.findOne({
+    const currentTicket: Ticket = await this.tickets.findOne({
       where: { [Op.or]: [{ userId: userId, eventId: ticketData.eventId }, { transaction_ref: ticketData.transaction_ref }] },
     });
 
     // if there's a active subscription return it
-    if (currentSub) {
+    if (currentTicket) {
       throw new HttpException(200, 'You already have an active registration');
     }
 
     const currentUser: User = await this.users.findByPk(userId);
+
+    const userPlan = await this.subscriptions.findOne({
+      include: { model: DB.sequelize.models.Users, as: 'user', where: { id: currentUser.id }, required: true },
+    });
+
     const currentEvent: Event = await this.events.findByPk(ticketData.eventId);
 
-    if (currentEvent.entry_fee == '0') {
-      // if entry_fee is 0 skip to creating ticketƒ
-      // free events --> create ticket and return;
-      const newSub = await this.tickets.create({
+    // check the event_plan table to see if user qualifies to register for this current event
+    const findEventPlan = await this.eventsPlan.findOne({
+      where: {
+        [Op.and]: {
+          eventId: currentEvent.id,
+          planId: userPlan.planId,
+        },
+      },
+      include: [
+        { model: DB.sequelize.models.Plan, as: 'plan', where: { id: userPlan.planId }, required: true },
+        { model: DB.sequelize.models.Events, as: 'event', where: { id: currentEvent.id }, required: true },
+      ],
+    });
+
+    if (!findEventPlan) {
+      throw new HttpException(200, 'You are not eligibile to register for this event');
+    }
+
+    const newSub = await this.tickets.create(
+      {
         ...ticketData,
         userId: currentUser.id,
         eventId: currentEvent.id,
-      });
+      },
+      { include: { all: true, attributes: { exclude: ['eventId', 'userId'] } } },
+    );
 
-      return newSub;
-    }
-
-    // verify payment
-    let res;
-    if (isProd) {
-      res = await this.paystack.transaction.verify(ticketData.transaction_ref);
-    } else {
-      res = await paystackMock.transaction.verify(ticketData.transaction_ref); // testing purposes
-    }
-
-    if (res.status === false) {
-      throw new HttpException(401, res.message);
-    }
-
-    if (res.data.status === 'success') {
-      // create new ticket or update
-
-      const newSub = await this.tickets.create(
-        {
-          ...ticketData,
-          userId: currentUser.id,
-          eventId: currentEvent.id,
-        },
-        { include: { all: true, attributes: { exclude: ['eventId', 'userId'] } } },
-      );
-
-      // create  invoice for current ticket
-
-      return newSub;
-    } else {
-      throw new HttpException(400, 'Transaction not successful');
-    }
+    return newSub;
   }
 
   public async getUserRegistration(userId: string, eventId: string): Promise<Ticket> {

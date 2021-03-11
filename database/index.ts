@@ -12,6 +12,7 @@ import plansFactory from '../src/models/plans.model';
 import subscriptionFactory from '../src/models/subscription.model';
 import invoiceFactory from '../src/models/invoice.model';
 import TicketFactory from '../src/models/tickets.model';
+import eventsPlanFactory from '../src/models/event_plans.model';
 const env = process.env.NODE_ENV || 'development';
 console.log(config[env].database, config[env].username, config[env].password, config[env].host, config[env].port);
 const sequelize = new Sequelize.Sequelize(config[env].database, config[env].username, config[env].password, {
@@ -58,6 +59,7 @@ const UserModel = userFactory(sequelize, { AddressModel });
 const SubscriptionModel = subscriptionFactory(sequelize, { UserModel, PlansModel });
 const InvoiceModel = invoiceFactory(sequelize, { PlansModel, SubscriptionModel, UserModel });
 const TicketModel = TicketFactory(sequelize, { UserModel, EventModel });
+const EventsPlanModel = eventsPlanFactory(sequelize, { EventModel, PlansModel });
 
 const DB = {
   Users: UserModel,
@@ -70,6 +72,7 @@ const DB = {
   Subscriptions: SubscriptionModel,
   Invoice: InvoiceModel,
   Tickets: TicketModel,
+  EventsPlan: EventsPlanModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };

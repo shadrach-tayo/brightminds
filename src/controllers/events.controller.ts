@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateEventDto, CreateTicketDto } from '../dtos/resources.dto';
+import HttpException from '../exceptions/HttpException';
 import { RequestWithFile, RequestWithUser } from '../interfaces/auth.interface';
 import { Event, Ticket } from '../interfaces/domain.interface';
 import EventService from '../services/events.service';
@@ -33,10 +34,12 @@ class EventsController {
 
   public createEvent = async (req: Request, res: Response, next: NextFunction) => {
     const data: CreateEventDto = req.body;
-
+    // const avatarFile = req.file;
+    // console.log('data ', data);
     try {
       const createEventData: Event = await this.eventService.createEvent(data);
-      res.status(201).json({ data: createEventData, message: 'created' });
+      // const avatarUpload = await this.uploadService.uploadEventBanner({ eventId: createEventData.id, avatarFile });
+      res.status(201).json({ data: { ...createEventData }, message: 'created' });
     } catch (error) {
       console.log('err ', error);
       next(error);
@@ -58,7 +61,9 @@ class EventsController {
   public uploadEventBannner = async (req: RequestWithFile, res: Response, next: NextFunction) => {
     const eventId = req.params.id;
     const avatarFile = req.file;
-
+    if (!avatarFile) {
+      return next(new HttpException(409, 'File not accepted, check file size and extension'));
+    }
     try {
       const data = await this.uploadService.uploadEventBanner({ eventId, avatarFile });
       res.status(200).json({ data, message: 'updated' });
