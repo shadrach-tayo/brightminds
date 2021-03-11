@@ -80,9 +80,6 @@ export interface Ticket extends BaseDomain {
   eventId?: string;
   userId?: string;
   user?: User;
-  quantity: number;
-  amount_paid: string;
-  transaction_ref: string;
 }
 
 export interface Plan extends BaseDomain {

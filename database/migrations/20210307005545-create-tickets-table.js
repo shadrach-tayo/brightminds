@@ -11,21 +11,6 @@ module.exports = {
           defaultValue: Sequelize.UUIDV4,
         },
 
-        status: {
-          type: Sequelize.INTEGER,
-          defaultValue: 1,
-        },
-
-        amount_paid: {
-          type: Sequelize.INTEGER,
-          defaultValue: 0,
-        },
-
-        transaction_ref: {
-          type: Sequelize.STRING(255),
-          unique: true,
-        },
-
         created_at: {
           type: Sequelize.DATE,
         },

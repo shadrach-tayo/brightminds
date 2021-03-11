@@ -41,7 +41,7 @@ class EventsRoute implements Route {
 
     this.router.post(
       `${this.path}`,
-      this.upload.none(),
+      // this.upload.none(),
       authMiddleware,
       permissionMiddleWare.grantAccess('createAny', RESOURCES.EVENTS),
       this.eventsController.createEvent,

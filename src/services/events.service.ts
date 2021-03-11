@@ -4,7 +4,7 @@ import DB from '../../database';
 import { isEmpty } from '../utils/util';
 import { InvalidData } from '../exceptions';
 import { Op } from 'sequelize';
-import { CreateEventDto } from '../dtos/resources.dto';
+import { CreateEventDto, CreateTicketDto } from '../dtos/resources.dto';
 import config from '../config';
 import paystack from 'paystack';
 
@@ -92,10 +92,10 @@ class EventService {
     return findEvent;
   }
 
-  public async register(userId: string, ticketData: Ticket): Promise<Ticket> {
+  public async register(userId: string, ticketData: CreateTicketDto): Promise<Ticket> {
     // check if user has an active Ticket and abort
     const currentTicket: Ticket = await this.tickets.findOne({
-      where: { [Op.or]: [{ userId: userId, eventId: ticketData.eventId }, { transaction_ref: ticketData.transaction_ref }] },
+      where: { [Op.or]: [{ userId: userId, eventId: ticketData.eventId }] },
     });
 
     // if there's a active subscription return it
@@ -131,11 +131,10 @@ class EventService {
 
     const newSub = await this.tickets.create(
       {
-        ...ticketData,
         userId: currentUser.id,
         eventId: currentEvent.id,
       },
-      { include: { all: true, attributes: { exclude: ['eventId', 'userId'] } } },
+      { include: { all: true } },
     );
 
     return newSub;

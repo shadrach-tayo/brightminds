@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsNotEmpty, IsNotEmptyObject, IsNumberString, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsDateString, IsNotEmptyObject, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
 import { Address, Event } from '../interfaces/domain.interface';
 
 export class CreateAddressDto implements Address {
@@ -48,15 +48,6 @@ export class CreateEventDto implements Event {
 }
 
 export class CreateTicketDto {
-  @IsNumberString()
-  amount_paid: string;
-
-  @IsNumberString()
-  quantity: number;
-
-  @IsString()
-  transaction_ref: string;
-
   @IsString()
   @IsOptional()
   userId: string;
