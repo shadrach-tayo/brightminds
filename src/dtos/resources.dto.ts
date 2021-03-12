@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsNotEmpty, IsNotEmptyObject, IsNumberString, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsDateString, IsNotEmptyObject, IsNumberString, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
 import { Address, Event } from '../interfaces/domain.interface';
 
 export class CreateAddressDto implements Address {
