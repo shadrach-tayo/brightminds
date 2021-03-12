@@ -12,11 +12,11 @@ function expressLoader(app) {
     app.use(morgan('combined', { stream }));
     app.use(cors());
     app.use(cors({ origin: true, credentials: false })); // remove this line before production
-    // app.options('*', cors());
+    app.options('*', cors());
   } else if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev', { stream }));
     app.use(cors({ origin: true, credentials: true }));
-    // app.options('*', cors());
+    app.options('*', cors());
   }
 
   app.use(hpp());
