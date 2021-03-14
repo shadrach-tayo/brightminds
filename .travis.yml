@@ -7,8 +7,6 @@ before_install:
     - docker build -t shadrach19/brightminds .
 
 script:
-    - npm run db:migrate:prod
-    - npm run db:seed:prod
     - docker run -e CI=true shadrach19/brightminds npm run test
   
 
