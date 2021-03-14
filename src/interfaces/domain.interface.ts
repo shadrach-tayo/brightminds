@@ -52,8 +52,7 @@ export interface Event extends BaseDomain {
   end_date: string;
   event_time: string;
   banner?: string;
-  addressId?: string;
-  address?: Record<string, any>;
+  location: string;
 }
 
 export interface Competition extends BaseDomain {
@@ -80,9 +79,6 @@ export interface Ticket extends BaseDomain {
   eventId?: string;
   userId?: string;
   user?: User;
-  quantity: number;
-  amount_paid: string;
-  transaction_ref: string;
 }
 
 export interface Plan extends BaseDomain {

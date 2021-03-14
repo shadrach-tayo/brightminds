@@ -1,10 +1,10 @@
 import HttpException from '../exceptions/HttpException';
-import { Address, Event, Ticket, User } from '../interfaces/domain.interface';
+import { Event, Ticket, User } from '../interfaces/domain.interface';
 import DB from '../../database';
 import { isEmpty } from '../utils/util';
 import { InvalidData } from '../exceptions';
 import { Op } from 'sequelize';
-import { CreateEventDto } from '../dtos/resources.dto';
+import { CreateEventDto, CreateTicketDto } from '../dtos/resources.dto';
 import config from '../config';
 import paystack from 'paystack';
 
@@ -43,13 +43,9 @@ class EventService {
   public async createEvent(data: CreateEventDto): Promise<Event> {
     if (isEmpty(data)) throw new InvalidData();
 
-    if (!data.address) throw new HttpException(409, 'Invalid Address data');
-
     if (!data.membership_types || data.membership_types.length === 0) throw new HttpException(409, 'Membership types cannot be empty');
 
-    const eventAddress: Address = await this.address.create(data.address);
-
-    const createEvent: Event = await this.events.create({ ...data, addressId: eventAddress.id }, { include: DB.sequelize.models.Address });
+    const createEvent: Event = await this.events.create({ ...data });
 
     for (const planId of data.membership_types) {
       const checkPlan = await this.plans.findOne({ where: { id: planId } });
@@ -73,10 +69,6 @@ class EventService {
 
     await this.events.update({ ...eventData }, { where: { id: eventId } });
 
-    if (!isEmpty(eventData.address)) {
-      await this.address.update({ ...eventData.address }, { where: { id: findEvent.addressId } });
-    }
-
     const data: Event = await this.events.findByPk(eventId, { include: [{ all: true }] });
     return data;
   }
@@ -92,10 +84,10 @@ class EventService {
     return findEvent;
   }
 
-  public async register(userId: string, ticketData: Ticket): Promise<Ticket> {
+  public async register(userId: string, ticketData: CreateTicketDto): Promise<Ticket> {
     // check if user has an active Ticket and abort
     const currentTicket: Ticket = await this.tickets.findOne({
-      where: { [Op.or]: [{ userId: userId, eventId: ticketData.eventId }, { transaction_ref: ticketData.transaction_ref }] },
+      where: { [Op.or]: [{ userId: userId, eventId: ticketData.eventId }] },
     });
 
     // if there's a active subscription return it
@@ -131,11 +123,15 @@ class EventService {
 
     const newSub = await this.tickets.create(
       {
-        ...ticketData,
         userId: currentUser.id,
         eventId: currentEvent.id,
       },
-      { include: { all: true, attributes: { exclude: ['eventId', 'userId'] } } },
+      {
+        include: [
+          { model: DB.sequelize.models.Users, as: 'user' },
+          { model: DB.sequelize.models.Events, as: 'event' },
+        ],
+      },
     );
 
     return newSub;

@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 import { Event } from '../interfaces/domain.interface';
 
-export type EventCreationAttributes = Optional<Event, 'addressId'>;
+export type EventCreationAttributes = Optional<Event, 'end_date'>;
 
 export class EventModel extends Model<Event, EventCreationAttributes> implements Event {
   public id: string;
@@ -11,12 +11,13 @@ export class EventModel extends Model<Event, EventCreationAttributes> implements
   public start_date: string;
   public end_date: string;
   public event_time: string;
+  public location: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-export default function eventFactory(sequelize: Sequelize, { AddressModel }): typeof EventModel {
+export default function eventFactory(sequelize: Sequelize): typeof EventModel {
   EventModel.init(
     {
       id: {
@@ -37,17 +38,18 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel }): ty
 
       start_date: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
       },
 
       end_date: {
-        allowNull: false,
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
       },
 
       event_time: {
         type: DataTypes.DATE,
       },
+
+      location: DataTypes.STRING(255),
     },
     {
       tableName: 'events',
@@ -56,7 +58,7 @@ export default function eventFactory(sequelize: Sequelize, { AddressModel }): ty
     },
   );
 
-  EventModel.belongsTo(AddressModel);
+  // EventModel.belongsTo(AddressModel);
   EventModel.sync({ alter: true });
   return EventModel;
 }

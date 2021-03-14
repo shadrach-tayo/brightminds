@@ -14,7 +14,7 @@ export class CreatePlanDto implements Plan {
   public valid_from: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(3)
   public plan_name: string;
 
   @IsBooleanString()
