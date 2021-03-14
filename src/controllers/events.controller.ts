@@ -33,14 +33,11 @@ class EventsController {
   };
 
   public createEvent = async (req: Request, res: Response, next: NextFunction) => {
-    const data: CreateEventDto = req.body;
-    // const avatarFile = req.file;
-    console.log('data ', data);
+    const body: CreateEventDto = req.body;
     try {
-      const createEventData: Event = await this.eventService.createEvent(data);
+      const data: Event = await this.eventService.createEvent(body);
       // const avatarUpload = await this.uploadService.uploadEventBanner({ eventId: createEventData.id, avatarFile });
-      console.log('res ', createEventData);
-      res.status(201).json({ data: createEventData, message: 'created' });
+      res.status(201).json({ data, message: 'created' });
     } catch (error) {
       console.log('err ', error);
       next(error);

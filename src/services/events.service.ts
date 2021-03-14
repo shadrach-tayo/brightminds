@@ -1,5 +1,5 @@
 import HttpException from '../exceptions/HttpException';
-import { Address, Event, Ticket, User } from '../interfaces/domain.interface';
+import { Event, Ticket, User } from '../interfaces/domain.interface';
 import DB from '../../database';
 import { isEmpty } from '../utils/util';
 import { InvalidData } from '../exceptions';
@@ -43,13 +43,9 @@ class EventService {
   public async createEvent(data: CreateEventDto): Promise<Event> {
     if (isEmpty(data)) throw new InvalidData();
 
-    if (!data.address) throw new HttpException(409, 'Invalid Address data');
-
     if (!data.membership_types || data.membership_types.length === 0) throw new HttpException(409, 'Membership types cannot be empty');
 
-    const eventAddress: Address = await this.address.create(data.address);
-
-    const createEvent: Event = await this.events.create({ ...data, addressId: eventAddress.id }, { include: DB.sequelize.models.Address });
+    const createEvent: Event = await this.events.create({ ...data });
 
     for (const planId of data.membership_types) {
       const checkPlan = await this.plans.findOne({ where: { id: planId } });
@@ -72,10 +68,6 @@ class EventService {
     if (!findEvent) throw new HttpException(409, 'Event not registered');
 
     await this.events.update({ ...eventData }, { where: { id: eventId } });
-
-    if (!isEmpty(eventData.address)) {
-      await this.address.update({ ...eventData.address }, { where: { id: findEvent.addressId } });
-    }
 
     const data: Event = await this.events.findByPk(eventId, { include: [{ all: true }] });
     return data;
@@ -134,7 +126,12 @@ class EventService {
         userId: currentUser.id,
         eventId: currentEvent.id,
       },
-      { include: { all: true } },
+      {
+        include: [
+          { model: DB.sequelize.models.Users, as: 'user' },
+          { model: DB.sequelize.models.Events, as: 'event' },
+        ],
+      },
     );
 
     return newSub;

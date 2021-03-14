@@ -5,8 +5,8 @@ export type TicketCreationAttributes = Optional<Ticket, 'userId' | 'eventId'>;
 
 export class TicketModel extends Model<Ticket, TicketCreationAttributes> implements Ticket {
   public id: string;
-  public eventId?: string;
-  public userId?: string;
+  public eventId: string;
+  public userId: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

@@ -46,14 +46,14 @@ sequelize
     );
   })
   .catch((error: Error) => {
-    logger.error(`🔴 Unable to connect to the sdatabase: ${error}.`);
+    logger.error(`🔴 Unable to connect to the database: ${error}.`);
   });
 
 const AdminModel = adminFactory(sequelize);
 const AddressModel = addressFactory(sequelize);
 const TransactionModel = transactionFactory(sequelize);
 const CompetitionModel = competitionFactory(sequelize);
-const EventModel = eventFactory(sequelize, { AddressModel });
+const EventModel = eventFactory(sequelize);
 const PlansModel = plansFactory(sequelize);
 const UserModel = userFactory(sequelize, { AddressModel });
 const SubscriptionModel = subscriptionFactory(sequelize, { UserModel, PlansModel });
