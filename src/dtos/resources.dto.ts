@@ -45,7 +45,7 @@ export class CreateEventDto implements Event {
   public location: string;
 
   @IsArray()
-  @IsNotEmptyObject()
+  // @IsNotEmptyObject()
   public membership_types: string[];
 }
 

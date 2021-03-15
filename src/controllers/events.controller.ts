@@ -36,7 +36,6 @@ class EventsController {
     const body: CreateEventDto = req.body;
     try {
       const data: Event = await this.eventService.createEvent(body);
-      // const avatarUpload = await this.uploadService.uploadEventBanner({ eventId: createEventData.id, avatarFile });
       res.status(201).json({ data, message: 'created' });
     } catch (error) {
       console.log('err ', error);
