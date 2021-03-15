@@ -47,7 +47,7 @@ export interface Charge extends BaseDomain {
 
 export interface Event extends BaseDomain {
   title: string;
-  description?: string;
+  description: string;
   start_date: string;
   end_date: string;
   event_time: string;

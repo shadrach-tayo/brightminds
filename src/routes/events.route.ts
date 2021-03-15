@@ -44,6 +44,7 @@ class EventsRoute implements Route {
       // this.upload.none(),
       authMiddleware,
       permissionMiddleWare.grantAccess('createAny', RESOURCES.EVENTS),
+      validationMiddleware(CreateEventDto, 'body'),
       this.eventsController.createEvent,
     );
 

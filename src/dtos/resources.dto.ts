@@ -21,9 +21,11 @@ export class CreateAddressDto implements Address {
 
 export class CreateEventDto implements Event {
   @IsString()
+  @MinLength(3)
   public title: string;
 
   @IsString()
+  @MinLength(3)
   public description: string;
 
   @IsDateString({ strict: true })
