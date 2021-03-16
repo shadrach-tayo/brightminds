@@ -43,10 +43,10 @@ module.exports = {
         addressId: {
           type: Sequelize.UUID,
           field: 'address_id',
-          references: {
-            model: 'address',
-            key: 'id',
-          },
+          // references: {
+          //   model: 'address',
+          //   key: 'id',
+          // },
         },
 
         created_at: {

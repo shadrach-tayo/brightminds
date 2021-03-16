@@ -12,18 +12,18 @@ module.exports = {
       eventId: {
         type: Sequelize.UUID,
         field: 'event_id',
-        references: {
-          model: 'events',
-          key: 'id',
-        },
+        // references: {
+        //   model: 'events',
+        //   key: 'id',
+        // },
       },
       planId: {
         type: Sequelize.UUID,
         field: 'plan_id',
-        references: {
-          model: 'plan',
-          key: 'id',
-        },
+        // references: {
+        //   model: 'plan',
+        //   key: 'id',
+        // },
       },
     });
   },

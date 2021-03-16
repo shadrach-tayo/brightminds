@@ -79,10 +79,10 @@ module.exports = {
           type: Sequelize.UUID,
           unique: true,
           field: 'address_id',
-          references: {
-            model: 'address',
-            key: 'id',
-          },
+          // references: {
+          //   model: 'address',
+          //   key: 'id',
+          // },
         },
       },
       {
