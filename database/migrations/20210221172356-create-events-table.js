@@ -14,12 +14,12 @@ module.exports = {
 
         title: {
           allowNull: false,
-          type: Sequelize.STRING(45),
+          type: Sequelize.STRING(100),
         },
 
         description: {
           allowNull: false,
-          type: Sequelize.STRING(255),
+          type: Sequelize.TEXT,
         },
 
         banner: {
@@ -34,10 +34,6 @@ module.exports = {
         end_date: {
           allowNull: false,
           type: Sequelize.DATE,
-        },
-
-        event_time: {
-          type: Sequelize.TIME,
         },
 
         addressId: {
