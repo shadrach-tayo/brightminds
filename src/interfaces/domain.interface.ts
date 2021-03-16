@@ -50,7 +50,7 @@ export interface Event extends BaseDomain {
   description: string;
   start_date: string;
   end_date: string;
-  event_time: string;
+  // event_time: string;
   banner?: string;
   location: string;
 }
