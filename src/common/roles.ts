@@ -13,6 +13,7 @@ const roles = (function () {
     .readOwn(RESOURCES.SUBSCRIPTION)
     .createOwn(RESOURCES.EVENTS)
     .readOwn(RESOURCES.EVENTS)
+    .readAny(RESOURCES.EVENTS)
     .createOwn(RESOURCES.REMINDERS)
     .updateOwn(RESOURCES.REMINDERS)
     .deleteOwn(RESOURCES.REMINDERS)

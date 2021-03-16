@@ -38,6 +38,7 @@ class EventsController {
       });
 
       const plans = await PlansModel.findAll({
+        attributes: ['id', 'plan_name', 'description', 'price'],
         where: {
           id: Array.from(eventPlans, (item: any) => item.plan_id)
         }
