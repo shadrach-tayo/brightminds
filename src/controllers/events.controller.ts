@@ -29,7 +29,7 @@ class EventsController {
 
     try {
       const findOneEventData: Event = await this.eventService.findEventById(eventId);
-      const eventPlans: EventsPlanModel = await EventsPlanModel.findAll({
+      const eventPlans: any = await EventsPlanModel.findAll({
         attributes: ['plan_id'],
         where: {
           event_id: findOneEventData.id
@@ -39,11 +39,11 @@ class EventsController {
 
       const plans = await PlansModel.findAll({
         where: {
-          id: Array.from(eventPlans, item => item.plan_id)
+          id: Array.from(eventPlans, (item: any) => item.plan_id)
         }
       })
       // findOneEventData.allowed_plans = plans;
-      let eventData = {...findOneEventData};
+      let eventData: any = {...findOneEventData};
       eventData.allowed_plans = plans;
       res.status(200).json({ data: eventData, message: 'Event data retrieved' });
     } catch (error) {
