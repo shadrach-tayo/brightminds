@@ -33,7 +33,7 @@ class EventService {
   public async findEventById(eventId: string): Promise<any> {
     if (isEmpty(eventId)) throw new InvalidData();
 
-    const findEvent: Event = await this.events.findByPk(eventId);
+    const findEvent: Event = await this.events.findByPk(eventId, {raw: true});
 
     if (!findEvent) throw new HttpException(409, 'Event not found');
 

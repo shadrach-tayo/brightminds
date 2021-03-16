@@ -1,8 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
+import { Op } from 'sequelize';
 import { CreateEventDto, CreateTicketDto } from '../dtos/resources.dto';
 import HttpException from '../exceptions/HttpException';
 import { RequestWithFile, RequestWithUser } from '../interfaces/auth.interface';
 import { Event, Ticket } from '../interfaces/domain.interface';
+import { EventsPlanModel } from '../models/event_plans.model';
+import { PlansModel } from '../models/plans.model';
 import EventService from '../services/events.service';
 import UploadService from '../services/upload.service';
 import UserService from '../services/users.service';
@@ -26,7 +29,23 @@ class EventsController {
 
     try {
       const findOneEventData: Event = await this.eventService.findEventById(eventId);
-      res.status(200).json({ data: findOneEventData, message: '' });
+      const eventPlans: EventsPlanModel = await EventsPlanModel.findAll({
+        attributes: ['plan_id'],
+        where: {
+          event_id: findOneEventData.id
+        }, 
+        raw: true
+      });
+
+      const plans = await PlansModel.findAll({
+        where: {
+          id: Array.from(eventPlans, item => item.plan_id)
+        }
+      })
+      // findOneEventData.allowed_plans = plans;
+      let eventData = {...findOneEventData};
+      eventData.allowed_plans = plans;
+      res.status(200).json({ data: eventData, message: 'Event data retrieved' });
     } catch (error) {
       next(error);
     }
