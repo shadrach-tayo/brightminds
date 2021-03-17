@@ -7,7 +7,7 @@ export class EventModel extends Model<Event, EventCreationAttributes> implements
   public id: string;
   public title: string;
   public description: string;
-  public image_url: string;
+  public banner: string;
   public start_date: string;
   public end_date: string;
   public event_time: string;
