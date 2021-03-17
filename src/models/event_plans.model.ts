@@ -35,7 +35,7 @@ export default function eventFactory(sequelize: Sequelize, { EventModel, PlansMo
 
   EventsPlanModel.belongsTo(EventModel, { as: 'event' });
   EventsPlanModel.belongsTo(PlansModel, { as: 'plan' });
-  EventsPlanModel.sync({ alter: true });
+  // EventsPlanModel.sync({ alter: true });
 
   return EventsPlanModel;
 }

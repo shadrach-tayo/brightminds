@@ -26,8 +26,33 @@ class EventService {
   public paystack = paystack(config[env].PAYSTACK_SECRET_KEY);
 
   public async findAllEvents(): Promise<Event[]> {
-    const allEvents: Event[] = await this.events.findAll({ attributes: { exclude: ['addressId'] }, include: [{ all: true }] });
-    return allEvents;
+    const allEvents: Event[] = await this.events.findAll();
+
+    const eventList: any = allEvents.map(async e => {
+      const data: Event = {
+        id: e.id,
+        title: e.title,
+        description: e.description,
+        banner: e.banner,
+        start_date: e.start_date,
+        end_date: e.end_date,
+        event_time: e.event_time,
+        location: e.location,
+        createdAt: e.createdAt,
+        updatedAt: e.updatedAt,
+      };
+
+      const requiredPlans = await this.eventsPlan.findAll({
+        where: { eventId: e.id },
+        include: [{ model: DB.sequelize.models.Plan, as: 'plan' }],
+        attributes: { exclude: ['eventId'] },
+      });
+      data.requiredPlans = requiredPlans;
+
+      return data;
+    });
+
+    return Promise.all(eventList);
   }
 
   public async findEventById(eventId: string): Promise<any> {
@@ -37,15 +62,36 @@ class EventService {
 
     if (!findEvent) throw new HttpException(409, 'Event not found');
 
-    return findEvent;
+    const data: Event = {
+      id: findEvent.id,
+      title: findEvent.title,
+      description: findEvent.description,
+      banner: findEvent.banner,
+      start_date: findEvent.start_date,
+      end_date: findEvent.end_date,
+      event_time: findEvent.event_time,
+      location: findEvent.location,
+      createdAt: findEvent.createdAt,
+      updatedAt: findEvent.updatedAt,
+    };
+
+    const requiredPlans = await this.eventsPlan.findAll({
+      where: { eventId: findEvent.id },
+      include: [{ model: DB.sequelize.models.Plan, as: 'plan' }],
+      attributes: { exclude: ['eventId'] },
+    });
+
+    data.requiredPlans = requiredPlans;
+
+    return data;
   }
 
   public async createEvent(data: CreateEventDto): Promise<Event> {
     if (isEmpty(data)) throw new InvalidData();
 
-    if (!data.membership_types || data.membership_types.length === 0) throw new HttpException(409, 'Membership types cannot be empty');
-
     const createEvent: Event = await this.events.create({ ...data });
+    // if (!data.membership_types || data.membership_types.length === 0) throw new HttpException(409, 'Membership types cannot be empty');
+    if (!data.membership_types || data.membership_types.length === 0) return createEvent;
 
     for (const planId of data.membership_types) {
       const checkPlan = await this.plans.findOne({ where: { id: planId } });
@@ -102,6 +148,35 @@ class EventService {
     });
 
     const currentEvent: Event = await this.events.findByPk(ticketData.eventId);
+
+    // get all restrictions for this event
+    const eventRestrictions = await this.eventsPlan.findAll({
+      where: {
+        eventId: currentEvent.id,
+      },
+      include: [
+        { model: DB.sequelize.models.Plan, as: 'plan' },
+        { model: DB.sequelize.models.Events, as: 'event' },
+      ],
+    });
+    console.log('required plans ', eventRestrictions);
+    if (eventRestrictions.length === 0) {
+      // event is opened to all plan types
+      const newSub = await this.tickets.create(
+        {
+          userId: currentUser.id,
+          eventId: currentEvent.id,
+        },
+        {
+          include: [
+            { model: DB.sequelize.models.Users, as: 'user' },
+            { model: DB.sequelize.models.Events, as: 'event' },
+          ],
+        },
+      );
+
+      return newSub;
+    }
 
     // check the event_plan table to see if user qualifies to register for this current event
     const findEventPlan = await this.eventsPlan.findOne({

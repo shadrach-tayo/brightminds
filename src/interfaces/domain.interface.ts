@@ -53,6 +53,7 @@ export interface Event extends BaseDomain {
   event_time: string;
   banner?: string;
   location: string;
+  requiredPlans?: any[];
 }
 
 export interface Competition extends BaseDomain {
