@@ -7,5 +7,4 @@ module.exports = {
   'migrations-source-path': path.resolve('database', 'migrations'),
   'migrations-compiled-path': path.resolve('database', 'migrations'), 
   'seeders-path': path.resolve('database', 'seeders'),
-  'migrations-path': path.resolve('database', 'migrations'),
 };

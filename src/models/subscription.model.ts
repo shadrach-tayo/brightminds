@@ -55,9 +55,9 @@ export default function subscriptionFactory(sequelize: Sequelize, { UserModel, P
         unique: true,
         allowNull: false,
         field: 'user_id',
-        references: {
-          model: 'users',
-        },
+        // references: {
+        //   model: 'users',
+        // },
       },
     },
     {

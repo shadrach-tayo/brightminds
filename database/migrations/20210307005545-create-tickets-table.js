@@ -23,20 +23,20 @@ module.exports = {
           type: Sequelize.UUID,
           allowNull: false,
           field: 'event_id',
-          references: {
-            model: 'events',
-            key: 'id',
-          },
+          // references: {
+          //   model: 'events',
+          //   key: 'id',
+          // },
         },
 
         userId: {
           type: Sequelize.UUID,
           allowNull: false,
           field: 'user_id',
-          references: {
-            model: 'users',
-            key: 'id',
-          },
+          // references: {
+          //   model: 'users',
+          //   key: 'id',
+          // },
         },
       },
       {

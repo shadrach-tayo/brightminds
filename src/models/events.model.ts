@@ -10,7 +10,7 @@ export class EventModel extends Model<Event, EventCreationAttributes> implements
   public banner: string;
   public start_date: string;
   public end_date: string;
-  public event_time: string;
+  // public event_time: string;
   public location: string;
 
   public readonly createdAt!: Date;
@@ -29,25 +29,25 @@ export default function eventFactory(sequelize: Sequelize): typeof EventModel {
 
       title: {
         allowNull: false,
-        type: DataTypes.STRING(45),
+        type: DataTypes.STRING(100),
       },
 
-      description: DataTypes.STRING(255),
+      description: DataTypes.TEXT,
 
-      banner: DataTypes.STRING(255),
+      banner: DataTypes.TEXT,
 
       start_date: {
         allowNull: false,
-        type: DataTypes.DATEONLY,
+        type: DataTypes.DATE,
       },
 
       end_date: {
-        type: DataTypes.DATEONLY,
-      },
-
-      event_time: {
         type: DataTypes.DATE,
       },
+
+      // event_time: {
+      //   type: DataTypes.DATE,
+      // },
 
       location: DataTypes.STRING(255),
     },

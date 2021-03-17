@@ -36,7 +36,7 @@ class EventService {
         banner: e.banner,
         start_date: e.start_date,
         end_date: e.end_date,
-        event_time: e.event_time,
+        // event_time: e.event_time,
         location: e.location,
         createdAt: e.createdAt,
         updatedAt: e.updatedAt,
@@ -58,7 +58,7 @@ class EventService {
   public async findEventById(eventId: string): Promise<any> {
     if (isEmpty(eventId)) throw new InvalidData();
 
-    const findEvent: Event = await this.events.findByPk(eventId);
+    const findEvent: Event = await this.events.findByPk(eventId, { raw: true });
 
     if (!findEvent) throw new HttpException(409, 'Event not found');
 
@@ -69,7 +69,7 @@ class EventService {
       banner: findEvent.banner,
       start_date: findEvent.start_date,
       end_date: findEvent.end_date,
-      event_time: findEvent.event_time,
+      // event_time: findEvent.event_time,
       location: findEvent.location,
       createdAt: findEvent.createdAt,
       updatedAt: findEvent.updatedAt,

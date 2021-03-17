@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+// import { Op } from 'sequelize';
 import { CreateEventDto, CreateTicketDto } from '../dtos/resources.dto';
 import HttpException from '../exceptions/HttpException';
 import { RequestWithFile, RequestWithUser } from '../interfaces/auth.interface';
@@ -26,7 +27,24 @@ class EventsController {
 
     try {
       const findOneEventData: Event = await this.eventService.findEventById(eventId);
-      res.status(200).json({ data: findOneEventData, message: '' });
+      // const eventPlans: any = await EventsPlanModel.findAll({
+      //   attributes: ['plan_id'],
+      //   where: {
+      //     event_id: findOneEventData.id,
+      //   },
+      //   raw: true,
+      // });
+
+      // const plans = await PlansModel.findAll({
+      //   attributes: ['id', 'plan_name', 'description', 'price'],
+      //   where: {
+      //     id: Array.from(eventPlans, (item: any) => item.plan_id),
+      //   },
+      // });
+      // // findOneEventData.allowed_plans = plans;
+      // const eventData: any = { ...findOneEventData };
+      // eventData.allowed_plans = plans;
+      res.status(200).json({ data: findOneEventData, message: 'Event data retrieved' });
     } catch (error) {
       next(error);
     }

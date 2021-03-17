@@ -42,10 +42,10 @@ module.exports = {
     await queryInterface.addColumn('events', 'addressId', {
       type: Sequelize.UUID,
       field: 'address_id',
-      references: {
-        model: 'address',
-        key: 'id',
-      },
+      // references: {
+      //   model: 'address',
+      //   key: 'id',
+      // },
     });
   },
 };

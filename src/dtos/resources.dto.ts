@@ -31,14 +31,14 @@ export class CreateEventDto implements Event {
   @IsDateString({ strict: true })
   public start_date: string;
 
+  @IsOptional()
   @IsDateString({ strict: true })
   public end_date: string;
 
   public banner: any;
 
-  @IsDateString()
-  @IsOptional()
-  public event_time: string;
+  // @IsOptional()
+  // public event_time: string;
 
   @IsString()
   @MinLength(3)

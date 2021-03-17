@@ -47,19 +47,19 @@ module.exports = {
           unique: true,
           allowNull: false,
           field: 'user_id',
-          references: {
-            model: 'users',
-            key: 'id',
-          },
+          // references: {
+          //   model: 'users',
+          //   key: 'id',
+          // },
         },
         planId: {
           type: Sequelize.UUID,
           field: 'plan_id',
           allowNull: false,
-          references: {
-            model: 'plan',
-            key: 'id',
-          },
+          // references: {
+          //   model: 'plan',
+          //   key: 'id',
+          // },
         },
       },
       {
