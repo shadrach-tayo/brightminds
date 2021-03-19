@@ -42,12 +42,12 @@ class EventService {
         updatedAt: e.updatedAt,
       };
 
-      const requiredPlans = await this.eventsPlan.findAll({
+      const allowed_plans = await this.eventsPlan.findAll({
         where: { eventId: e.id },
         include: [{ model: DB.sequelize.models.Plan, as: 'plan' }],
         attributes: { exclude: ['eventId'] },
       });
-      data.requiredPlans = requiredPlans;
+      data.allowed_plans = allowed_plans;
 
       return data;
     });
@@ -81,7 +81,7 @@ class EventService {
       attributes: { exclude: ['eventId'] },
     });
 
-    data.requiredPlans = requiredPlans;
+    data.allowed_plans = requiredPlans;
 
     return data;
   }
@@ -121,6 +121,8 @@ class EventService {
 
   public async deleteEventData(eventId: string): Promise<Event> {
     if (isEmpty(eventId)) throw new HttpException(400, 'Event Id cannot be empty');
+
+    await this.eventsPlan.destroy({ where: { eventId } });
 
     const findEvent: Event = await this.events.findByPk(eventId);
     if (!findEvent) throw new HttpException(409, 'Event not registered');

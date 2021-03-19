@@ -16,7 +16,7 @@ export class EventsPlanModel extends Model<any, EventsPlanCreationAttributes> {
   public readonly updatedAt!: Date;
 }
 
-export default function eventFactory(sequelize: Sequelize, { EventModel, PlansModel }): typeof EventsPlanModel {
+export default function eventsPlanFactory(sequelize: Sequelize, { EventModel, PlansModel }): typeof EventsPlanModel {
   EventsPlanModel.init(
     {
       id: {

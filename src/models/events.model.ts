@@ -58,7 +58,6 @@ export default function eventFactory(sequelize: Sequelize): typeof EventModel {
     },
   );
 
-  // EventModel.belongsTo(AddressModel);
   EventModel.sync({ alter: true });
   return EventModel;
 }

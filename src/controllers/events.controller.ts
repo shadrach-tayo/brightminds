@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-// import { Op } from 'sequelize';
 import { CreateEventDto, CreateTicketDto } from '../dtos/resources.dto';
 import HttpException from '../exceptions/HttpException';
 import { RequestWithFile, RequestWithUser } from '../interfaces/auth.interface';
@@ -101,7 +100,7 @@ class EventsController {
 
   public registerEvent = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const data: CreateTicketDto = req.body;
-    const userId: string = req.params.userId || req.user.id;
+    const userId: string = req.body.userId || req.user.id;
 
     try {
       const result: Ticket = await this.eventService.register(userId, data);

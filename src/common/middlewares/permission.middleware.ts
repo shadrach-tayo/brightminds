@@ -63,11 +63,11 @@ const grantAccess = (action, resource) => {
 //   };
 // };
 
-const isSameUserOrAdmin = (action, resource: RESOURCES) => {
+const isSameUserOrAdmin = (action: string, resource: RESOURCES) => {
   return async (req, res, next) => {
     try {
       const userId = req.user.id;
-      const updateId = req.params.id;
+      const updateId = req.params.id || req.body.userId;
 
       if (userId === updateId) return next();
 

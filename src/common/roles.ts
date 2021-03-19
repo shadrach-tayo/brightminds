@@ -17,7 +17,9 @@ const roles = (function () {
     .createOwn(RESOURCES.REMINDERS)
     .updateOwn(RESOURCES.REMINDERS)
     .deleteOwn(RESOURCES.REMINDERS)
-    .readAny(RESOURCES.COMPETITION);
+    .createOwn(RESOURCES.COMPETITION)
+    .readOwn(RESOURCES.COMPETITION)
+    .updateOwn(RESOURCES.COMPETITION);
 
   ac.grant(UserTypeEnum.ADMIN)
     .extend(UserTypeEnum.MEMBER)
@@ -28,6 +30,7 @@ const roles = (function () {
     .createAny(RESOURCES.SUBSCRIPTION)
     .readAny(RESOURCES.SUBSCRIPTION)
     .updateAny(RESOURCES.SUBSCRIPTION)
+    .readAny(RESOURCES.COMPETITION)
     .createAny(RESOURCES.COMPETITION)
     .updateAny(RESOURCES.COMPETITION)
     .deleteAny(RESOURCES.COMPETITION)

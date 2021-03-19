@@ -53,20 +53,22 @@ export interface Event extends BaseDomain {
   // event_time: string;
   banner?: string;
   location: string;
-  requiredPlans?: any[];
+  allowed_plans?: any[];
 }
 
 export interface Competition extends BaseDomain {
   title: string;
   description: string;
-  startDate: string;
-  endDate: string;
-  image_url: string;
-  address?: Address;
-  charge?: Charge;
-  transaction?: Transaction;
+  opening_date: string;
+  closing_date: string;
+  banner?: string;
+  allowed_plans?: any[];
 }
-
+export interface CompetitionEntry extends BaseDomain {
+  userId?: string;
+  entry?: string;
+  competitionId?: string;
+}
 export interface Transaction extends BaseDomain {
   event?: Event;
   competition?: Competition;
